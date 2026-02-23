@@ -12,4 +12,8 @@ const createRefreshToken = (payload) => {
     algorithm: "HS256",
   });
 };
-module.exports = { createAccessToken, createRefreshToken };
+const verifyToken = async (token) => {
+  const decode = await jwt.verify(token, process.env.JWT_SECRET);
+  console.log(decode);
+};
+module.exports = { createAccessToken, createRefreshToken, verifyToken };
