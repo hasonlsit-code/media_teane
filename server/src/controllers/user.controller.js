@@ -65,5 +65,8 @@ class UserController {
       metadata: { accessToken, refreshToken },
     }).send(res);
   }
+  async authUser(req, res) {
+    const { userId } = req.user;
+  }
 }
 module.exports = new UserController();

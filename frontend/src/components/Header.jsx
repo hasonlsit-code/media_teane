@@ -1,4 +1,5 @@
 import "../App.css";
+import { Link } from "react-router-dom";
 import { CompassOutlined } from "@ant-design/icons";
 function Header() {
   return (
@@ -7,9 +8,9 @@ function Header() {
         <CompassOutlined />
       </div>
       <nav className="hero__nav">
-        <a className="nav__link active" href="#">
+        <Link className="nav__link active" to="/">
           Home
-        </a>
+        </Link>
         <a className="nav__link" href="#">
           About us
         </a>
@@ -47,12 +48,14 @@ function Header() {
           </svg>
         </button>
 
-        <a className="login" href="#">
+        <Link className="login" to="/login">
+          {" "}
+          {/* 2. Thay <a> bằng <Link> và href bằng to */}
           <svg viewBox="0 0 24 24" className="icon icon--user">
             <path d="M12 12a4 4 0 10-4-4 4 4 0 004 4zm0 2c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5z" />
           </svg>
           Login
-        </a>
+        </Link>
       </div>
     </header>
   );

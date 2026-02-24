@@ -11,7 +11,16 @@ import { ConfigProvider } from "antd";
 import About from "./components/homepage/About.jsx";
 import ProductMain from "./components/homepage/ProductMain.jsx";
 import ProductList from "./components/homepage/ProductList.jsx";
-import Slide from "./components/homepage/Slide.jsx";
+import Shop from "./pages/client/Shop.jsx";
+import CreateUser from "./components/admin/user/CreateUser.jsx";
+import DetailUser from "./components/admin/user/DetailUser.jsx";
+import TableUser from "./components/admin/user/TableUser.jsx";
+import UpdateUser from "./components/admin/user/UpdateUser.jsx";
+import CreateProduct from "./components/admin/product/CreateProduct.jsx";
+import TableProduct from "./components/admin/product/TableProduct.jsx";
+import DetailProduct from "./components/admin/product/DetailProduct.jsx";
+import DashBoard from "./components/admin/dashboard/Dashboard.jsx";
+import UpdateProduct from "./components/admin/product/UpdateProduct.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -43,6 +52,29 @@ const router = createBrowserRouter([
         path: "register",
         element: <RegisterPage />,
       },
+      {
+        path: "shop",
+        element: <Shop />,
+      },
+    ],
+  },
+  {
+    path: "/admin",
+    element: <DashBoard />,
+    children: [
+      { index: true, element: <TableUser /> },
+
+      // USER
+      { path: "table-user", element: <TableUser /> },
+      { path: "create-user", element: <CreateUser /> },
+      { path: "detail-user", element: <DetailUser /> },
+      { path: "update-user", element: <UpdateUser /> },
+
+      // PRODUCT
+      { path: "table-product", element: <TableProduct /> },
+      { path: "create-product", element: <CreateProduct /> },
+      { path: "detail-product", element: <DetailProduct /> },
+      { path: "update-product", element: <UpdateProduct /> },
     ],
   },
 ]);

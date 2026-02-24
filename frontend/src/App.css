@@ -67,6 +67,13 @@ body {
   align-items: center;
   justify-content: center;
   gap: 20px;
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+
+  background: rgba(18, 26, 31, 0.92); /* nền tối như ảnh */
+  backdrop-filter: blur(8px); /* mờ nhẹ đẹp hơn */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 .hero__nav {
   display: flex;

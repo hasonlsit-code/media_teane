@@ -1,11 +1,13 @@
 import React from "react";
 import { Button, Checkbox, Form, Input, Divider } from "antd";
 import { GoogleOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 const onFinish = (values) => console.log("Success:", values);
 const onFinishFailed = (errorInfo) => console.log("Failed:", errorInfo);
 
 const LoginPage = () => {
+  const navigate = useNavigate();
   const handleGoogleAuth = () => {
     // TẠM THỜI: chuyển sang route backend để bắt đầu Google OAuth
     window.location.href = "http://localhost:5000/auth/google";
@@ -46,7 +48,7 @@ const LoginPage = () => {
         <Button type="primary" htmlType="submit" block>
           Đăng nhập
         </Button>
-
+        <Button onClick={() => navigate("/register")}>Đăng kí tài khoản</Button>
         <Divider plain>hoặc</Divider>
 
         <Button icon={<GoogleOutlined />} onClick={handleGoogleAuth} block>
