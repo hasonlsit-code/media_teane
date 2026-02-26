@@ -48,14 +48,16 @@ function Slide() {
 
       <div className="hero__content">
         <h1 className="hero__title">
-          Quality tea production
-          <span className="hero__accent">Tea</span>
+          <span className="hero__accent">CHUYỆN CỦA MEDITEA</span>
         </h1>
 
-        <p className="hero__desc">The tea is</p>
+        <p className="hero__desc">
+          Từ những năm tháng gắn bó với núi rừng, chúng tôi chọn làm trà lá già
+          – chậm rãi, thủ công và giữ trọn bản tính nguyên bản của lá.
+        </p>
 
         <button className="hero__cta">
-          Read more <span className="hero__ctaIcon">›</span>
+          Chi tiết hơn về MediTea<span className="hero__ctaIcon">›</span>
         </button>
       </div>
     </section>

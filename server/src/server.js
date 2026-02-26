@@ -4,6 +4,7 @@ const port = 3000;
 
 require("dotenv").config();
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const cors = require("cors");
 // conect db
 const connectDB = require("./config/connectDB");
@@ -16,8 +17,8 @@ app.use(
     extended: true,
   }),
 );
-
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cookieParser());
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 connectDB();
 app.get("/", (req, res) => {
   return res.json({

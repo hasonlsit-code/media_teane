@@ -1,5 +1,12 @@
 const jwt = require("jsonwebtoken");
 
+const asyncHandler = (fn) => async (req, res, next) => {
+  try {
+    await fn(req, res, next);
+  } catch (error) {
+    next(error);
+  }
+};
 const createAccessToken = (payload) => {
   return jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn: "1h",
@@ -15,5 +22,11 @@ const createRefreshToken = (payload) => {
 const verifyToken = async (token) => {
   const decode = await jwt.verify(token, process.env.JWT_SECRET);
   console.log(decode);
+  return decode;
 };
-module.exports = { createAccessToken, createRefreshToken, verifyToken };
+module.exports = {
+  createAccessToken,
+  createRefreshToken,
+  verifyToken,
+  asyncHandler,
+};

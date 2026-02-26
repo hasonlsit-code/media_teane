@@ -1,17 +1,33 @@
-import React from "react";
-import { Button, Form, Input, Radio } from "antd";
+import React, { useState } from "react";
+import { Button, Form, Input, Radio, message } from "antd";
 
 import { DatePicker } from "antd";
 import { Link, Navigate, useNavigate } from "react-router-dom";
+import { requestRegister } from "../../config/UserRequest";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
-  const onFinish = (values) => {
-    console.log("Success:", values);
+  const onFinish = async (values) => {
+    setLoading(true);
+    try {
+      const res = await requestRegister(values);
+      message.success("Đăng kí thành công!");
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+      navigate("/");
+    } catch (error) {
+      message.error(error.response?.data?.message || "Đăng kí thất bại");
+      console.log("Register error", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const onFinishFailed = (errorInfo) => {
+    message.error("Vui lòng kiểm tra lại thông tin!");
     console.log("Failed:", errorInfo);
   };
   return (
@@ -27,7 +43,7 @@ const RegisterPage = () => {
     >
       <Form.Item
         label="Họ và tên"
-        name="fullname"
+        name="fullName"
         rules={[{ required: true, message: "Vui lòng nhập họ và tên!" }]}
       >
         <Input placeholder="Nhập họ và tên" />
@@ -35,7 +51,7 @@ const RegisterPage = () => {
 
       <Form.Item
         label="Ngày sinh"
-        name="dob"
+        name="date"
         rules={[{ required: true, message: "Vui lòng chọn ngày sinh!" }]}
       >
         <DatePicker
@@ -55,11 +71,11 @@ const RegisterPage = () => {
         </Radio.Group>
       </Form.Item>
       <Form.Item
-        label="Số điện thoại di động hoặc email"
+        label="Email"
         name="email"
         rules={[{ required: true, message: "Vui lòng nhập email" }]}
       >
-        <Input.Password />
+        <Input placeholder="Nhập email" type="email" />
       </Form.Item>
       <Form.Item
         label="Mật khẩu"
@@ -70,7 +86,7 @@ const RegisterPage = () => {
       </Form.Item>
 
       <Form.Item label={null}>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" loading={loading}>
           Đăng kí tài khoản
         </Button>
         <Button type="dashed" onClick={() => navigate("/login")}>

@@ -1,28 +1,28 @@
 import "../../App.css";
 const FEATURES = [
   {
-    title: "Highest quality",
-    desc: "Integer quis tempor orci.\nSuspendisse potenti.",
+    title: "1. Lá trà đủ tuổi",
+    desc: "Chọn lá trà đủ năm để vị đậm và hậu sâu tự nhiên.",
   },
   {
-    title: "Pure taste",
-    desc: "Integer quis tempor orci.\nSuspendisse potenti.",
+    title: "2. Chế biến thủ công",
+    desc: "Sao sấy thủ công, tôn trọng nhịp điệu của từng mẻ trà.",
   },
   {
-    title: "Wide assortment",
-    desc: "Integer quis tempor orci.\nSuspendisse potenti.",
+    title: "3. Giữ vị nguyên bản",
+    desc: "Không hương liệu. Không phụ gia. Không che lấp bản tính của lá.",
   },
   {
-    title: "Eco package",
-    desc: "Integer quis tempor orci.\nSuspendisse potenti.",
+    title: "4. Trung thực nguồn gốc",
+    desc: "Rõ vùng trồng, rõ cách làm, rõ tiêu chuẩn.",
   },
   {
-    title: "Gluten free",
-    desc: "Integer quis tempor orci.\nSuspendisse potenti.",
+    title: "5. Gắn bó thiên nhiên",
+    desc: "Làm trà giữa môi trường núi rừng, nơi khí hậu và thời gian định hình hương vị.",
   },
   {
-    title: "Without GMO",
-    desc: "Integer quis tempor orci.\nSuspendisse potenti.",
+    title: "6. Bền vững dài hạn",
+    desc: "Theo đuổi chất lượng ổn định, không đánh đổi vì số lượng.",
   },
 ];
 
@@ -62,12 +62,12 @@ export default function About() {
   return (
     <section className="ps">
       <div className="ps__inner">
-        <p className="ps__kicker">About company</p>
-        <h2 className="ps__title">Quality ceylon tea production</h2>
+        <p className="ps__kicker">TRIẾT LÝ MEDITEA</p>
+        <h2 className="ps__title"></h2>
         <p className="ps__desc">
-          Integer quis tempor orci. Suspendisse potenti. Interdum et malesuada
-          fames ac ante ipsum primis in faucibus. Quisque gravida tempor diam id
-          finibus. Duis non mi augue.
+          Chúng tôi tin rằng giá trị của trà không nằm ở việc làm khác đi, mà ở
+          việc để lá đủ năm trên cây, quá trình chế biến đủ chậm và hương vị đủ
+          thật khi đến tay người dùng.
         </p>
 
         <div className="ps__features" role="list">
@@ -101,7 +101,7 @@ export default function About() {
         </div>
 
         <button className="ps__btn" type="button">
-          Read more <span className="ps__btn-dot" aria-hidden="true" />
+          Tìm hiểu chi tiết <span className="ps__btn-dot" aria-hidden="true" />
         </button>
       </div>
 

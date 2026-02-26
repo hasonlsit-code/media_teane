@@ -3,11 +3,12 @@ export default function ProductList() {
   return (
     <section className="product">
       <div className="product__head">
-        <p className="product__kicker">Our products</p>
-        <h2 className="product__title">Ceylon tea assortment</h2>
+        <p className="product__kicker">MEDITEA – LÁ TRÀ GIÀ NGUYÊN BẢN</p>
+        <h2 className="product__title"></h2>
         <p className="product__desc">
-          Integer quis tempor orci. Suspendisse potenti. Interdum et malesuada
-          fames ac ante ipsum primis in faucibus.
+          Không phải lá non hái sớm. MediTEA chọn lá trà 1–3 năm tuổi từ vùng
+          cao – nơi sương gió và khí hậu khắc nghiệt giúp lá trà dày, đậm vị và
+          tích tụ hương tự nhiên.
         </p>
       </div>
 
@@ -20,8 +21,11 @@ export default function ProductList() {
               alt="Green Tea"
             />
             <div className="product-card__label">
-              <h3>Green Tea</h3>
-              <p>Nullam dictum molestie quam, non feugiat dui eleifend eget.</p>
+              <h3>Trà lá già cổ thụ Shan Tuyết vùng cao</h3>
+              <p>
+                Thu hái từ cây trà cổ thụ lâu năm trên núi cao. Vị đậm, hậu sâu,
+                hương thơm rõ tầng và bền lâu.
+              </p>
             </div>
           </div>
         </article>
@@ -34,8 +38,11 @@ export default function ProductList() {
               alt="Black Tea"
             />
             <div className="product-card__label">
-              <h3>Black Tea</h3>
-              <p>Nullam dictum molestie quam, non feugiat dui eleifend eget.</p>
+              <h3>Trà lá già từ đồi trà địa phương</h3>
+              <p>
+                Chọn lọc từ những đồi trà quen thuộc, đủ năm và đủ chuẩn. Cân
+                bằng, dễ tiếp cận, phù hợp uống hằng ngày.
+              </p>
             </div>
           </div>
         </article>
@@ -48,20 +55,23 @@ export default function ProductList() {
               alt="Organic Tea"
             />
             <div className="product-card__label">
-              <h3>Organic Tea</h3>
-              <p>Nullam dictum molestie quam, non feugiat dui eleifend eget.</p>
+              <h3>Bột trà MediTEA</h3>
+              <p>
+                Xay mịn từ trà lá già nguyên bản. Giữ trọn hương vị tự nhiên,
+                tiện lợi cho pha uống và ứng dụng ẩm thực.
+              </p>
             </div>
           </div>
         </article>
       </div>
 
       <div className="product__nav">
-        <button className="navBtn navBtn--ghost" aria-label="Prev">
+        {/* <button className="navBtn navBtn--ghost" aria-label="Prev">
           ‹
         </button>
         <button className="navBtn" aria-label="Next">
           ›
-        </button>
+        </button> */}
       </div>
     </section>
   );

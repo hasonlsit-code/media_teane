@@ -12,7 +12,7 @@ function Homepage() {
       <About />
       <ProductList />
       <ProductMain />
-      <Certificate />
+      {/* <Certificate /> */}
     </>
   );
 }

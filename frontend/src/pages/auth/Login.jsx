@@ -1,21 +1,41 @@
-import React from "react";
-import { Button, Checkbox, Form, Input, Divider } from "antd";
-import { GoogleOutlined } from "@ant-design/icons";
+import React, { useState } from "react";
+import { Button, Checkbox, Form, Input, Divider, message } from "antd";
+import { GoogleOutlined, LockOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-
-const onFinish = (values) => console.log("Success:", values);
-const onFinishFailed = (errorInfo) => console.log("Failed:", errorInfo);
+import { requestLogin } from "../../config/UserRequest";
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const handleGoogleAuth = () => {
     // TẠM THỜI: chuyển sang route backend để bắt đầu Google OAuth
     window.location.href = "http://localhost:5000/auth/google";
   };
+  const onFinish = async (values) => {
+    setLoading(true);
+    try {
+      const res = await requestLogin(values);
+      message.success("Đăng nhập thành công!");
+      setTimeout(() => {
+        window.location.reload();
+      }, 5000);
+      navigate("/");
+    } catch (error) {
+      message.error("Vui lòng đăng nhập lại !");
+      // message.error(error.response.data.message);
+      console.log("Login error", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const onFinishFailed = (errorInfo) => {
+    message.error("Vui lòng kiểm tra lại thông tin!");
+    console.log("Failed:", errorInfo);
+  };
 
   return (
     <Form
-      name="basic"
+      name="login"
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}
       style={{ maxWidth: 600 }}
@@ -26,7 +46,7 @@ const LoginPage = () => {
     >
       <Form.Item
         label="Tên đăng nhập"
-        name="username"
+        name="email"
         rules={[{ required: true, message: "Vui lòng nhập tên đăng nhập!" }]}
       >
         <Input placeholder="Tên đăng nhập" />
@@ -37,21 +57,50 @@ const LoginPage = () => {
         name="password"
         rules={[{ required: true, message: "Vui lòng nhập mật khẩu" }]}
       >
-        <Input.Password placeholder="Mật khẩu" />
+        <Input.Password
+          prefix={<LockOutlined className="text-gray-400" />}
+          placeholder="••••••••"
+        />
       </Form.Item>
 
-      <Form.Item name="remember" valuePropName="checked" label={null}>
+      <Form.Item
+        name="remember"
+        valuePropName="checked"
+        wrapperCol={{ offset: 8, span: 16 }}
+      >
         <Checkbox>Nhớ mật khẩu</Checkbox>
       </Form.Item>
 
-      <Form.Item label={null}>
-        <Button type="primary" htmlType="submit" block>
+      <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+        <Button
+          type="link"
+          htmlType="button"
+          onClick={() => navigate("/forgot-password")}
+        >
+          Quên mật khẩu?
+        </Button>
+
+        <Button type="primary" htmlType="submit" block loading={loading}>
           Đăng nhập
         </Button>
-        <Button onClick={() => navigate("/register")}>Đăng kí tài khoản</Button>
+
+        <Button
+          htmlType="button"
+          block
+          onClick={() => navigate("/register")}
+          style={{ marginTop: 8 }}
+        >
+          Đăng kí tài khoản
+        </Button>
+
         <Divider plain>hoặc</Divider>
 
-        <Button icon={<GoogleOutlined />} onClick={handleGoogleAuth} block>
+        <Button
+          htmlType="button"
+          icon={<GoogleOutlined />}
+          onClick={handleGoogleAuth}
+          block
+        >
           Tiếp tục với Google
         </Button>
       </Form.Item>

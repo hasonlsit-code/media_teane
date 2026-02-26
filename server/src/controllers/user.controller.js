@@ -25,48 +25,112 @@ function setCookie(res, refreshToken, accessToken) {
 }
 class UserController {
   async register(req, res) {
-    const { fullName, date, gender, email, password } = req.body;
+    const { fullName, email, password } = req.body;
     const findUser = await userModel.findOne({ email });
     if (findUser) {
-      return res.status(400).json({
-        message: "Email đã tồn tại",
-      });
+      throw new ConflictRequestError("Email đã tồn tại");
     }
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
+
     const newUser = await userModel.create({
       fullName,
+      date,
+      dob,
       email,
       password: hashedPassword,
     });
+
     const accessToken = createAccessToken({ id: newUser._id });
     const refreshToken = createRefreshToken({ id: newUser._id });
+
     setCookie(res, accessToken, refreshToken);
-    throw new Created({
-      message: "Đăng kí thành công",
+
+    return new Created({
+      message: "Đăng ký thành công",
       metadata: newUser,
     }).send(res);
   }
   async login(req, res) {
     const { email, password } = req.body;
     const findUser = await userModel.findOne({ email });
+
     if (!findUser) {
-      throw new NotFoundError("Tài khoản hoặc mật khẩu không chính xác");
+      throw new NotFoundError("Tài khoản hoặc mật khẩu không chính xác !");
     }
-    const isMathPassword = bcrypt.compare(password, findUser.password);
+
+    const isMathPassword = await bcrypt.compare(password, findUser.password);
+
     if (!isMathPassword) {
-      throw new AuthFailureError("Tài khoản hoặc mật khẩu không chính xác");
+      throw new AuthFailureError("Tài khoản hoặc mật khẩu không chính xác !");
     }
+
     const accessToken = createAccessToken({ id: findUser._id });
     const refreshToken = createRefreshToken({ id: findUser._id });
+
     setCookie(res, accessToken, refreshToken);
-    new OK({
-      message: "dang nhap thanh cong",
+
+    return new OK({
+      message: "Đăng nhập thành công",
       metadata: { accessToken, refreshToken },
     }).send(res);
   }
+
   async authUser(req, res) {
-    const { userId } = req.user;
+    const userId = req.user;
+    if (!userId) {
+      throw new AuthFailureError("Vui lòng đăng nhập lại");
+    }
+    const findUser = await userModel.findById(userId);
+    if (!findUser) {
+      throw new NotFoundError("Người dùng không tồn tại");
+    }
+
+    return new OK({
+      message: "Xác thực thành công",
+      metadata: findUser,
+    }).send(res);
+  }
+
+  async logout(req, res) {
+    const userId = req.user;
+    const findUser = await userModel.findById(userId);
+    if (!findUser) {
+      throw new NotFoundError("Người dùng không tồn tại");
+    }
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+    res.clearCookie("logged");
+    return new OK({
+      message: "Đăng xuất thành công",
+      metadata: findUser,
+    }).send(res);
+  }
+  async forgotPassword(req, res) {
+    const { email } = req.body;
+    const findUser = await userModel.findOne(email);
+    if (!findUser) {
+      throw new NotFoundError("Người dùng không tồn tại");
+    }
+    const otp = otpGenerator.generate(6, {
+      digits: true,
+      lowerCaseAlphabets: false,
+      upperCaseAlphabets: false,
+      specialChars: false,
+    });
+    const tokenForgotPassword = jwt.sign({ email }, process.env.JWT_SECRET, {
+      expiresIn: "5m",
+    });
+    res.cookie("tokenForgotPassword", tokenForgotPassword, {
+      httpOnly: false,
+      secure: true,
+      maxAge: 5 * 60 * 1000,
+      sameSite: "strict",
+    });
+    await otpModel.create({
+      otp,
+      email,
+    });
   }
 }
 module.exports = new UserController();
