@@ -7,6 +7,10 @@ const {
   ConflictRequestError,
 } = require("../core/error.response");
 const { OK, Created } = require("../core/success.response");
+const otpGenerator = require("otp-generator");
+const jwt = require("jsonwebtoken");
+const otpModel = require("../models/otp.model");
+const SendMailForgotPassword = require("../utils/mailForgotPassword");
 function setCookie(res, refreshToken, accessToken) {
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
@@ -135,6 +139,77 @@ class UserController {
       otp,
       email,
     });
+  }
+  async forgotPassword(req, res) {
+    const { email } = req.body;
+    const findUser = await userModel.findOne({ email });
+    if (!findUser) {
+      throw new NotFoundError("Email không tồn tại");
+    }
+
+    const otp = otpGenerator.generate(6, {
+      digits: true,
+      lowerCaseAlphabets: false,
+      upperCaseAlphabets: false,
+      specialChars: false,
+    });
+
+    const tokenForgotPassword = jwt.sign({ email }, process.env.JWT_SECRET, {
+      expiresIn: "5m",
+    });
+
+    res.cookie("tokenForgotPassword", tokenForgotPassword, {
+      httpOnly: false,
+      secure: true,
+      maxAge: 5 * 60 * 1000, // 5 minutes
+      sameSite: "strict",
+    });
+
+    await otpModel.create({
+      otp,
+      email,
+    });
+
+    await SendMailForgotPassword(email, otp);
+
+    return new OK({
+      message: "Mã OTP đã được gửi đến email của bạn",
+      metadata: true,
+    }).send(res);
+  }
+
+  async verifyForgotPassword(req, res) {
+    const { otp, password } = req.body;
+    const tokenForgotPassword = req.cookies.tokenForgotPassword;
+    if (!tokenForgotPassword || !otp) {
+      throw new BadRequestError("Bạn đang thiếu thông tin");
+    }
+    const decoded = jwt.verify(tokenForgotPassword, process.env.JWT_SECRET);
+    if (!decoded) {
+      throw new BadRequestError("Vui lòng gửi lại yêu cầu ");
+    }
+
+    const email = decoded.email;
+
+    const findOtp = await otpModel.findOne({ email, otp });
+    if (!findOtp) {
+      throw new BadRequestError("Mã OTP không hợp lệ");
+    }
+
+    const findUser = await userModel.findOne({ email });
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    findUser.password = hashedPassword;
+
+    await findUser.save();
+
+    await otpModel.deleteMany({ email });
+    res.clearCookie("tokenForgotPassword");
+
+    return new OK({
+      message: "Khôi phục mật khẩu thành công",
+      metadata: true,
+    }).send(res);
   }
 }
 module.exports = new UserController();
