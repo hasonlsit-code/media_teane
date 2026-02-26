@@ -21,6 +21,8 @@ import TableProduct from "./components/admin/product/TableProduct.jsx";
 import DetailProduct from "./components/admin/product/DetailProduct.jsx";
 import DashBoard from "./components/admin/dashboard/Dashboard.jsx";
 import UpdateProduct from "./components/admin/product/UpdateProduct.jsx";
+import ForgotPassword from "./pages/auth/ForgotPassword.jsx";
+import ResetPassword from "./pages/auth/ResetPassword.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -51,6 +53,14 @@ const router = createBrowserRouter([
       {
         path: "register",
         element: <RegisterPage />,
+      },
+      {
+        path: "forgot-password",
+        element: <ForgotPassword />,
+      },
+      {
+        path: "/reset-password",
+        element: <ResetPassword />,
       },
       {
         path: "shop",

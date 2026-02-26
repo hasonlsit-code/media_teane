@@ -18,6 +18,18 @@ export const requestAuth = async () => {
   const res = await request.get(`${apiUser}/auth`);
   return res.data;
 };
+export const requestForgotPassword = async (data) => {
+  // data: { email }
+  const res = await request.post(`${apiUser}/forgot-password`, data);
+  return res.data;
+};
+
+// 2) Xác thực token + đặt mật khẩu mới
+export const requestVerifyForgotPassword = async (data) => {
+  // data: { token, password } (hoặc newPassword tuỳ backend)
+  const res = await request.post(`${apiUser}/verify-forgot-password`, data);
+  return res.data;
+};
 // export const requestRefreshToken = async () => {
 //   const res = await request.get(`${apiUser}/refresh-token`);
 //   return res.data;
