@@ -1,7 +1,11 @@
 const userModel = require("../models/user.model");
 const bcrypt = require("bcrypt");
 const { createAccessToken, createRefreshToken } = require("../auth/checkAuth");
-const { NotFoundError, AuthFailureError } = require("../core/error.response");
+const {
+  NotFoundError,
+  AuthFailureError,
+  ConflictRequestError,
+} = require("../core/error.response");
 const { OK, Created } = require("../core/success.response");
 function setCookie(res, refreshToken, accessToken) {
   res.cookie("accessToken", accessToken, {
@@ -25,7 +29,7 @@ function setCookie(res, refreshToken, accessToken) {
 }
 class UserController {
   async register(req, res) {
-    const { fullName, email, password } = req.body;
+    const { fullName, email, password, date, dob } = req.body;
     const findUser = await userModel.findOne({ email });
     if (findUser) {
       throw new ConflictRequestError("Email đã tồn tại");
@@ -44,7 +48,7 @@ class UserController {
     const accessToken = createAccessToken({ id: newUser._id });
     const refreshToken = createRefreshToken({ id: newUser._id });
 
-    setCookie(res, accessToken, refreshToken);
+    setCookie(res, refreshToken, accessToken);
 
     return new Created({
       message: "Đăng ký thành công",

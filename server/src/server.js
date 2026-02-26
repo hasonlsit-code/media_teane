@@ -28,7 +28,10 @@ app.get("/", (req, res) => {
 });
 
 routes(app);
-
+app.use((err, req, res, next) => {
+  const status = err.status || 500;
+  res.status(status).json({ message: err.message });
+});
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });

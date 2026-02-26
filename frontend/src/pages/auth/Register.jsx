@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Form, Input, Radio, message } from "antd";
-
+import dayjs from "dayjs";
 import { DatePicker } from "antd";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { requestRegister } from "../../config/UserRequest";
@@ -8,19 +8,28 @@ import { requestRegister } from "../../config/UserRequest";
 const RegisterPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-
+  const [form] = Form.useForm();
   const onFinish = async (values) => {
     setLoading(true);
     try {
-      const res = await requestRegister(values);
+      const payload = {
+        ...values,
+        date: values.date ? dayjs(values.date).format("DD/MM/YYYY") : "",
+      };
+      const res = await requestRegister(payload);
+
       message.success("Đăng kí thành công!");
       setTimeout(() => {
         window.location.reload();
       }, 1000);
-      navigate("/");
+      navigate("/login");
     } catch (error) {
-      message.error(error.response?.data?.message || "Đăng kí thất bại");
-      console.log("Register error", error);
+      const msg = error?.response?.data?.message;
+
+      if (msg === "Email đã tồn tại") {
+        form.setFields([{ name: "email", errors: [msg] }]);
+      }
+      message.error(msg || "Đăng kí thất bại");
     } finally {
       setLoading(false);
     }
@@ -32,11 +41,11 @@ const RegisterPage = () => {
   };
   return (
     <Form
-      name="basic"
+      form={form}
+      name="register"
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 16 }}
       style={{ maxWidth: 600 }}
-      initialValues={{ remember: true }}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
       autoComplete="off"
@@ -60,9 +69,10 @@ const RegisterPage = () => {
           style={{ width: "100%" }}
         />
       </Form.Item>
+
       <Form.Item
         label="Giới tính"
-        name="gender"
+        name="dob"
         rules={[{ required: true, message: "Vui lòng chọn giới tính!" }]}
       >
         <Radio.Group>
@@ -70,13 +80,18 @@ const RegisterPage = () => {
           <Radio value="female">Nữ</Radio>
         </Radio.Group>
       </Form.Item>
+
       <Form.Item
         label="Email"
         name="email"
-        rules={[{ required: true, message: "Vui lòng nhập email" }]}
+        rules={[
+          { required: true, message: "Vui lòng nhập email" },
+          { type: "email", message: "Email không hợp lệ" },
+        ]}
       >
-        <Input placeholder="Nhập email" type="email" />
+        <Input placeholder="Nhập email" />
       </Form.Item>
+
       <Form.Item
         label="Mật khẩu"
         name="password"
@@ -85,11 +100,15 @@ const RegisterPage = () => {
         <Input.Password placeholder="Nhập mật khẩu" />
       </Form.Item>
 
-      <Form.Item label={null}>
+      <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
         <Button type="primary" htmlType="submit" loading={loading}>
           Đăng kí tài khoản
         </Button>
-        <Button type="dashed" onClick={() => navigate("/login")}>
+        <Button
+          style={{ marginLeft: 8 }}
+          type="dashed"
+          onClick={() => navigate("/login")}
+        >
           Đăng nhập nếu đã có tài khoản rồi
         </Button>
       </Form.Item>
