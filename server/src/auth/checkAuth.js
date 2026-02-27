@@ -1,3 +1,4 @@
+const { OAuth2Client } = require("google-auth-library");
 const jwt = require("jsonwebtoken");
 
 const asyncHandler = (fn) => async (req, res, next) => {
@@ -24,9 +25,21 @@ const verifyToken = async (token) => {
   console.log(decode);
   return decode;
 };
+const client_id = process.env.GOOLE_CLIENT_ID;
+const client = new OAuth2Client(client_id);
+
+const verifyTokenGoogle = async (token) => {
+  const ticket = await client.verifyIdToken({
+    idToken: token,
+    audience: client_id,
+  });
+  const payload = ticket.getPayload();
+  return payload;
+};
 module.exports = {
   createAccessToken,
   createRefreshToken,
   verifyToken,
   asyncHandler,
+  verifyTokenGoogle,
 };

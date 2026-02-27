@@ -211,5 +211,36 @@ class UserController {
       metadata: true,
     }).send(res);
   }
+  async loginGoogle(req, res) {
+    try {
+      const { token } = req.body;
+      if (!token) {
+        return res.status(400).json({ message: "Thiếu token" });
+      }
+
+      const payload = await verifyTokenGoogle(token);
+      const { email, name, sub } = payload;
+
+      let account = await userModel.findOne({ email });
+      if (!account) {
+        account = await userModel.create({
+          fullName: name || email,
+          date: new Date().toISOString(),
+          //  dob
+          email: email,
+          password: hashedPassword,
+          type: "loginGoogle",
+        });
+      }
+      return res.status(200).json({
+        message: "Login Google thành công",
+        user: account,
+      });
+    } catch (error) {
+      return res.status(401).json({
+        message: "Google token không hợp lệ",
+      });
+    }
+  }
 }
 module.exports = new UserController();

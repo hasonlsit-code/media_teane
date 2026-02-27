@@ -23,6 +23,9 @@ import DashBoard from "./components/admin/dashboard/Dashboard.jsx";
 import UpdateProduct from "./components/admin/product/UpdateProduct.jsx";
 import ForgotPassword from "./pages/auth/ForgotPassword.jsx";
 import ResetPassword from "./pages/auth/ResetPassword.jsx";
+import Story from "./components/about-us/Story.jsx";
+import Philosophy from "./components/about-us/Story-3.jsx";
+import Original from "./components/about-us/Story-2.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -65,6 +68,18 @@ const router = createBrowserRouter([
       {
         path: "shop",
         element: <Shop />,
+      },
+      {
+        path: "story",
+        element: <Story />,
+      },
+      {
+        path: "story-3",
+        element: <Original />,
+      },
+      {
+        path: "story-2",
+        element: <Philosophy />,
       },
     ],
   },

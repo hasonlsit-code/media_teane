@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "../../App.css";
 const FEATURES = [
   {
@@ -100,9 +101,9 @@ export default function About() {
           ))}
         </div>
 
-        <button className="ps__btn" type="button">
+        <Link to="story-2">
           Tìm hiểu chi tiết <span className="ps__btn-dot" aria-hidden="true" />
-        </button>
+        </Link>
       </div>
 
       {/* Try your colors panel */}

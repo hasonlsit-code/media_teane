@@ -314,52 +314,57 @@ body {
 .ps {
   position: relative;
   background: #fff;
-  padding: 64px 16px 80px;
+  padding: 72px 16px 86px;
 }
 
 .ps__inner {
-  max-width: 1100px;
+  max-width: 1120px;
   margin: 0 auto;
   text-align: center;
 }
 
 .ps__kicker {
-  margin: 0 0 8px;
+  margin: 0 0 10px;
   font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
   color: #7aa641;
   font-style: italic;
 }
 
-.ps__title {
-  margin: 0;
-  font-size: clamp(28px, 3.2vw, 44px);
-  font-weight: 700;
-  color: #1f2a2e;
-}
-
 .ps__desc {
-  margin: 14px auto 40px;
-  max-width: 820px;
+  margin: 12px auto 44px;
+  max-width: 860px;
   color: #5e676b;
-  line-height: 1.8;
+  line-height: 1.85;
   font-style: italic;
 }
 
+/* 6 cột thẳng hàng */
 .ps__features {
   display: grid;
-  grid-template-columns: repeat(6, minmax(140px, 1fr));
+  grid-template-columns: repeat(6, minmax(150px, 1fr));
   gap: 18px;
   align-items: start;
   justify-items: center;
-  margin-top: 14px;
+  margin-top: 10px;
 }
 
+/* mỗi item có layout cố định để không lệch */
 .ps__feature {
-  position: relative;
   width: 100%;
-  padding-top: 8px;
+  position: relative;
+  display: grid;
+  grid-template-rows: 110px auto 1fr; /* hàng 1: icon area cố định */
+  align-items: start;
+}
+
+/* vùng icon (để nối đường chấm đúng tâm) */
+.ps__iconRow {
+  position: relative;
+  height: 110px;
+  display: grid;
+  place-items: center;
 }
 
 .ps__badge {
@@ -369,9 +374,8 @@ body {
   background: #87b34a;
   display: grid;
   place-items: center;
-  margin: 0 auto 18px;
   color: #fff;
-  box-shadow: 0 12px 24px rgba(135, 179, 74, 0.18);
+  box-shadow: 0 12px 26px rgba(135, 179, 74, 0.22);
 }
 
 .ps__icon-svg {
@@ -379,28 +383,34 @@ body {
   height: 44px;
 }
 
+/* đường chấm nối: canh giữa icon và nối sang item kế */
 .ps__dotted {
   position: absolute;
-  top: 51px;
+  top: 50%;
+  left: calc(50% + 50px); /* 50px = nửa đường kính icon (86/2 ~ 43) + đệm */
   right: -10px;
-  width: 50%;
+  transform: translateY(-50%);
   height: 2px;
   background-image: radial-gradient(
     circle,
-    rgba(130, 130, 130, 0.55) 1.2px,
+    rgba(140, 140, 140, 0.55) 1.2px,
     transparent 1.3px
   );
   background-size: 10px 2px;
   background-repeat: repeat-x;
-  transform: translateX(50%);
-  opacity: 0.7;
+  opacity: 0.75;
 }
 
+/* title + desc căn đều */
 .ps__feature-title {
-  margin: 0 0 10px;
+  margin: 8px 0 10px;
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 800;
   color: #1f2a2e;
+  line-height: 1.15;
+  min-height: 42px; /* giữ title cùng hàng */
+  display: grid;
+  align-items: center;
 }
 
 .ps__feature-desc {
@@ -408,20 +418,18 @@ body {
   color: #6b7377;
   line-height: 1.7;
   font-size: 14px;
+  padding: 0 6px;
 }
 
-.ps__btn {
-  margin: 34px auto 0;
+/* link phía dưới cho đẹp như ảnh */
+.ps a {
+  margin-top: 34px;
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 22px;
-  border-radius: 999px;
-  border: 0;
-  background: #243136;
-  color: #fff;
+  color: #5a2ea6;
+  text-decoration: underline;
   font-weight: 600;
-  cursor: pointer;
 }
 
 .ps__btn-dot {
@@ -432,84 +440,6 @@ body {
   display: inline-block;
 }
 
-.ps__colors {
-  position: absolute;
-  right: 26px;
-  top: 50%;
-  transform: translateY(-18%);
-  width: 110px;
-  background: #fff;
-  border-radius: 28px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.14);
-  padding: 10px 10px 14px;
-}
-
-.ps__colors-close {
-  position: absolute;
-  right: 10px;
-  top: 8px;
-  width: 26px;
-  height: 26px;
-  border-radius: 999px;
-  border: 0;
-  background: #fff;
-  cursor: pointer;
-  font-size: 18px;
-  color: #c24a4a;
-}
-
-.ps__colors-top {
-  display: grid;
-  grid-template-columns: 34px 1fr;
-  align-items: center;
-  gap: 8px;
-  padding: 18px 10px 8px;
-}
-
-.ps__colors-wheel {
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
-  background: conic-gradient(#77b255, #f7d038, #77b255, #2c3e50, #77b255);
-  border: 4px solid #f3f5f6;
-}
-
-.ps__colors-text {
-  text-align: left;
-  font-size: 12px;
-  font-weight: 700;
-  color: #2a3236;
-  line-height: 1.1;
-}
-
-.ps__swatches {
-  display: grid;
-  gap: 10px;
-  justify-items: center;
-  padding-top: 8px;
-}
-
-.ps__swatch {
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
-  border: 4px solid #f3f5f6;
-  cursor: pointer;
-  background: #ddd;
-}
-
-.ps__swatch--green {
-  background: #87b34a;
-}
-.ps__swatch--yellow {
-  background: #f7d038;
-}
-.ps__swatch--light {
-  background: #f6f7f8;
-}
-.ps__swatch--dark {
-  background: #2c3e50;
-}
 .ft {
   position: relative;
   background: #2a3439; /* xanh đen */

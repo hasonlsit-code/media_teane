@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { initHeroBg } from "../../config/animation";
 import "../../App.css";
+import { Link } from "react-router-dom";
 
 function Slide() {
   useEffect(() => {
@@ -56,9 +57,9 @@ function Slide() {
           – chậm rãi, thủ công và giữ trọn bản tính nguyên bản của lá.
         </p>
 
-        <button className="hero__cta">
+        <Link to="story">
           Chi tiết hơn về MediTea<span className="hero__ctaIcon">›</span>
-        </button>
+        </Link>
       </div>
     </section>
   );

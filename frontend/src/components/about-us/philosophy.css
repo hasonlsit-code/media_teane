@@ -1,0 +1,159 @@
+.phi {
+  background: #fff;
+  color: #111;
+}
+
+.phi__container {
+  width: min(1120px, calc(100% - 44px));
+  margin: 0 auto;
+}
+
+/* HERO */
+.phi__hero {
+  position: relative;
+  min-height: 54vh;
+  display: grid;
+  align-items: end;
+  padding: 80px 0 56px;
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.78)),
+    url("/images/anh1.png");
+  background-size: cover;
+  background-position: center;
+}
+
+.phi__overlay {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    900px 500px at 10% 10%,
+    rgba(255, 255, 255, 0.12),
+    transparent 60%
+  );
+}
+
+.phi__heroInner {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+}
+
+.phi__kicker {
+  margin: 0 0 10px;
+  letter-spacing: 0.2em;
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.phi__title {
+  margin: 0 0 14px;
+  font-size: clamp(34px, 4vw, 56px);
+  line-height: 1.06;
+  font-weight: 650;
+}
+
+.phi__lead {
+  margin: 0;
+  max-width: 78ch;
+  font-size: 16px;
+  line-height: 1.9;
+  opacity: 0.92;
+}
+
+/* SECTION */
+.phi__section {
+  padding: 70px 0;
+}
+
+/* BLOCKS */
+.phi__block {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 42px;
+  align-items: center;
+  padding: 34px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.phi__block:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.phi__block--reverse {
+  grid-template-columns: 0.85fr 1.15fr;
+}
+
+.phi__block--reverse .phi__media {
+  order: 2;
+}
+.phi__block--reverse .phi__text {
+  order: 1;
+}
+
+.phi__media {
+  overflow: hidden;
+  border-radius: 2px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.1);
+}
+
+.phi__img {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+  display: block;
+  transform: scale(1.01);
+}
+
+.phi__text {
+  color: rgba(17, 17, 17, 0.78);
+  line-height: 1.95;
+  font-size: 16px;
+}
+
+.phi__head {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.phi__no {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  font-weight: 800;
+  color: #a46e3b;
+  background: rgba(164, 110, 59, 0.12);
+}
+
+.phi__h2 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.25;
+  font-weight: 750;
+  color: #111;
+}
+
+.phi__desc {
+  margin: 0;
+}
+
+/* CLOSING */
+.phi__closing {
+  padding: 0 0 70px;
+}
+
+.phi__closingBar {
+  background: #111;
+  color: #d7b98f;
+  padding: 18px 22px;
+  border-radius: 16px;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.7;
+}

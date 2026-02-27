@@ -2,14 +2,38 @@ import React, { useState } from "react";
 import { Button, Checkbox, Form, Input, Divider, message } from "antd";
 import { GoogleOutlined, LockOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { requestLogin } from "../../config/UserRequest";
-
+import { requestLogin, requestLoginGoogle } from "../../config/UserRequest";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
 const LoginPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const handleGoogleAuth = () => {
-    // TẠM THỜI: chuyển sang route backend để bắt đầu Google OAuth
-    window.location.href = "http://localhost:5000/auth/google";
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setLoading(true);
+    try {
+      // 1. Lấy token từ Google
+      const { credential } = credentialResponse;
+
+      // 2. Gọi API Backend (Bạn cần định nghĩa requestLoginGoogle trong UserRequest.js)
+      // Backend của bạn đang nhận { token } qua req.body
+      const res = await requestLoginGoogle({ token: credential });
+
+      message.success("Đăng nhập Google thành công!");
+
+      // Lưu thông tin user/token vào localStorage hoặc Context tùy dự án của bạn
+      // Sau đó chuyển hướng
+      setTimeout(() => {
+        navigate("/");
+        window.location.reload();
+      }, 1000);
+    } catch (error) {
+      console.error("Google Login Error:", error);
+      message.error(
+        error?.response?.data?.message || "Đăng nhập Google thất bại!",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
   const onFinish = async (values) => {
     setLoading(true);
@@ -79,11 +103,9 @@ const LoginPage = () => {
         >
           Quên mật khẩu?
         </Button>
-
         <Button type="primary" htmlType="submit" block loading={loading}>
           Đăng nhập
         </Button>
-
         <Button
           htmlType="button"
           block
@@ -92,17 +114,15 @@ const LoginPage = () => {
         >
           Đăng kí tài khoản
         </Button>
-
         <Divider plain>hoặc</Divider>
-
-        <Button
-          htmlType="button"
-          icon={<GoogleOutlined />}
-          onClick={handleGoogleAuth}
-          block
-        >
-          Tiếp tục với Google
-        </Button>
+        <GoogleOAuthProvider>
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => message.error("Không đăng nhập được với google")}
+          />
+          ;
+        </GoogleOAuthProvider>
+        ;
       </Form.Item>
     </Form>
   );

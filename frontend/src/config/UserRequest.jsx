@@ -30,6 +30,10 @@ export const requestVerifyForgotPassword = async (data) => {
   const res = await request.post(`${apiUser}/verify-forgot-password`, data);
   return res.data;
 };
+export const requestLoginGoogle = async (data) => {
+  const res = await request.post(`${apiUser}/login-google`, data);
+  return res.data;
+};
 // export const requestRefreshToken = async () => {
 //   const res = await request.get(`${apiUser}/refresh-token`);
 //   return res.data;

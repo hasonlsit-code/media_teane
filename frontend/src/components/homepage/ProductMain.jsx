@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "../../App.css";
 
 export default function ProductMain() {
@@ -48,11 +49,12 @@ export default function ProductMain() {
             </div>
           </div>
           <div style={{ display: "flex", gap: "15px", marginTop: "60px" }}>
-            <button className="product-detail__button" type="button">
-              Khám phá hành trình làm trà{" "}
-              <span className="product-detail__button-icon">›</span>
-            </button>
-
+            <Link to="/story-3">
+              <button className="product-detail__button" type="button">
+                Khám phá hành trình làm trà{" "}
+                <span className="product-detail__button-icon">›</span>
+              </button>
+            </Link>
             <button className="product-detail__button" type="button">
               Trải nghiệm xưởng trà 360°{" "}
               <span className="product-detail__button-icon">›</span>

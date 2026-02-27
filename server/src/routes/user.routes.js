@@ -14,4 +14,5 @@ router.post(
   "/verify-forgot-password",
   asyncHandler(userController.verifyForgotPassword),
 );
+router.post("/login-google", asyncHandler(userController.loginGoogle));
 module.exports = router;
