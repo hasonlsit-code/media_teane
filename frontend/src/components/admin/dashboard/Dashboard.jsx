@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import { Layout, Menu, Breadcrumb, theme } from "antd";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import "./dashboard.css";
+import { AntDesignOutlined, UserOutlined } from "@ant-design/icons";
 const { Header, Content, Footer, Sider } = Layout;
 
 const DashBoard = () => {
@@ -37,6 +38,26 @@ const DashBoard = () => {
           { label: "Update Product", key: "update-product" },
         ],
       },
+      {
+        key: "category",
+        label: "Category",
+        children: [
+          { label: "Table Category", key: "table-category" },
+          { label: "Create Category", key: "create-category" },
+          { label: "Detail Category", key: "detail-category" },
+          { label: "Update Category", key: "update-category" },
+        ],
+      },
+      {
+        key: "coupon",
+        label: "Coupon",
+        children: [{ label: "Tabel Coupon", key: "table-coupon" }],
+      },
+      {
+        key: "order",
+        label: "Order",
+        children: [{ label: "Tabel Coupon", key: "table-order" }],
+      },
     ],
     [],
   );
@@ -50,7 +71,7 @@ const DashBoard = () => {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
-        <div className="admin-logo">{!collapsed && <span>ADMIN</span>}</div>
+        <div className="admin-logo">{!collapsed && <span>Admin</span>}</div>
 
         <Menu
           theme="dark"
@@ -63,7 +84,12 @@ const DashBoard = () => {
       </Sider>
 
       <Layout>
-        <Header style={{ padding: 0, background: colorBgContainer }} />
+        <Header
+          style={{ padding: 0, background: colorBgContainer, gap: "10px" }}
+        >
+          <UserOutlined /> Đoàn Quang Đạt
+          <UserOutlined onClick={() => navigate("/")} /> Trang chủ
+        </Header>
 
         <Content style={{ margin: "0 16px" }}>
           <Breadcrumb style={{ margin: "16px 0" }}>

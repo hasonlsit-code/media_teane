@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./story.css";
 
-// ✅ Thay các link ảnh này bằng ảnh của bạn (hoặc import từ assets)
 const imgs = {
   grid1:
     "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=1400&q=70",
@@ -9,44 +8,58 @@ const imgs = {
     "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1400&q=70",
   grid3:
     "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1400&q=70",
-
-  craftBg:
-    "https://images.unsplash.com/photo-1520975958225-8f9d1b9f6a9e?auto=format&fit=crop&w=1800&q=70",
   craftOverlay:
     "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1400&q=70",
-
   numbersImg:
     "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1600&q=70",
-
-  splitImg:
-    "https://images.unsplash.com/photo-1528825871115-3581a5387919?auto=format&fit=crop&w=1800&q=70",
 };
 
 const Story = () => {
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.15,
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("revealed");
+        }
+      });
+    }, observerOptions);
+
+    const elements = document.querySelectorAll(
+      ".scroll-reveal, .scroll-reveal-left, .scroll-reveal-right",
+    );
+    elements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <main className="story">
+      {/* Hero Section */}
       <section className="storyHero">
         <img className="storyHero__bg" src="/images/anh1.png" alt="MediTEA" />
-
         <div className="storyHero__overlay" />
-
-        <div className="storyHero__content">
+        <div className="storyHero__content scroll-reveal">
           <div className="storyHero__box">
             <h1 className="storyHero__title">Câu chuyện của MediTEA</h1>
-            {/* <p className="storyHero__sub">
-              Ở nơi yên tĩnh này, mỗi nhịp trà là một nhịp thở — chậm, sâu và
-              bình an.
-            </p> */}
           </div>
         </div>
       </section>
+
+      {/* Section 1: Intro + Grid */}
       <section className="s s--center">
         <div className="c">
-          <h1 className="scriptTitle">
+          <h1 className="scriptTitle scroll-reveal">
             Câu chuyện của chúng tôi mới chỉ bắt đầu
           </h1>
 
-          <div className="centerText">
+          <div
+            className="centerText scroll-reveal"
+            style={{ transitionDelay: "0.2s" }}
+          >
             <p>
               Mọi thứ bắt đầu trong một lần đứng giữa vùng cao, nơi những cây
               Shan Tuyết lặng lẽ vươn mình trong sương. Trên những tán cây ấy,
@@ -59,16 +72,31 @@ const Story = () => {
           </div>
 
           <div className="grid3">
-            <img src={imgs.grid1} alt="MediTEA story 1" />
-            <img src={imgs.grid2} alt="MediTEA story 2" />
-            <img src={imgs.grid3} alt="MediTEA story 3" />
+            <img
+              className="scroll-reveal-left"
+              src={imgs.grid1}
+              alt="MediTEA story 1"
+            />
+            <img
+              className="scroll-reveal"
+              src={imgs.grid2}
+              alt="MediTEA story 2"
+              style={{ transitionDelay: "0.2s" }}
+            />
+            <img
+              className="scroll-reveal-right"
+              src={imgs.grid3}
+              alt="MediTEA story 3"
+              style={{ transitionDelay: "0.4s" }}
+            />
           </div>
         </div>
       </section>
 
+      {/* Section 2: Media Stack + Text Block */}
       <section className="s">
         <div className="wide">
-          <div className="mediaStack">
+          <div className="mediaStack scroll-reveal-left">
             <img
               className="mediaStack__overlay"
               src={imgs.craftOverlay}
@@ -76,7 +104,7 @@ const Story = () => {
             />
           </div>
 
-          <div className="textBlock">
+          <div className="textBlock scroll-reveal-right">
             <p>
               Tôi bắt đầu nghĩ về những chiếc lá đã đi qua nhiều mùa mưa nắng,
               tích tụ đủ nắng gió để trở nên đậm hơn, sâu hơn và bền hơn trong
@@ -100,9 +128,10 @@ const Story = () => {
         </div>
       </section>
 
+      {/* Section 3: Numbers */}
       <section className="s s--muted">
         <div className="c numbersWrap">
-          <div className="numbersCard">
+          <div className="numbersCard scroll-reveal-left">
             <h2>MEDITEA QUA CÁC CON SỐ</h2>
             <div className="divider" />
             <ul>
@@ -127,7 +156,7 @@ const Story = () => {
             </ul>
           </div>
 
-          <div className="numbersRight">
+          <div className="numbersRight scroll-reveal-right">
             <div className="numbersText">
               <p>
                 <b>Tên gọi MediTEA</b> là sự kết hợp giữa Meditation và Tea. Trà
@@ -145,7 +174,6 @@ const Story = () => {
                 đã trao cho nó.
               </p>
             </div>
-
             <img className="numbersImg" src={imgs.numbersImg} alt="Cảnh núi" />
           </div>
         </div>

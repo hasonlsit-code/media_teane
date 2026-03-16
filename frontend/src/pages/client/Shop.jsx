@@ -1,159 +1,321 @@
-// src/pages/client/Shop.jsx
+import { useEffect, useMemo, useState } from "react";
+import { Menu, Spin, Input, Select, Slider, Rate, Button, Tag } from "antd";
+import { useNavigate } from "react-router-dom";
+import {
+  AppstoreOutlined,
+  SearchOutlined,
+  ShoppingCartOutlined,
+} from "@ant-design/icons";
 import "./shop.css";
+import {
+  listProduct,
+  listProductByCategory,
+} from "../../config/ProductRequest";
+import { listCategory } from "../../config/CategoryRequest";
 
-const products = [
-  {
-    id: 1,
-    name: "An Xi Mao Xie",
-    price: "$3.00",
-    desc: "Duis et aliquam orci. Vivamus augue quam, sollicitudin quis bibendum quis, ...",
-    img: "/images/anh1.png",
-    rating: 5,
-  },
-  {
-    id: 2,
-    name: "Bai Hao Oolong",
-    price: "$1.99",
-    desc: "Duis et aliquam orci. Vivamus augue quam, sollicitudin quis bibendum quis, ...",
-    img: "/images/anh1.png",
-    rating: 4,
-  },
-  {
-    id: 3,
-    name: "Organic Green Tea",
-    price: "$2.50",
-    desc: "Duis et aliquam orci. Vivamus augue quam, sollicitudin quis bibendum quis, ...",
-    img: "/images/anh1.png",
-    rating: 5,
-  },
-  {
-    id: 4,
-    name: "Black Tea Premium",
-    price: "$4.10",
-    desc: "Duis et aliquam orci. Vivamus augue quam, sollicitudin quis bibendum quis, ...",
-    img: "/images/anh1.png",
-    rating: 4,
-  },
-];
+const { Option } = Select;
 
-function Stars({ value = 0 }) {
-  const full = Math.max(0, Math.min(5, value));
+function Shop() {
+  const navigate = useNavigate();
+  const [dataCategory, setDataCategory] = useState([]);
+  const [dataProduct, setDataProduct] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [loading, setLoading] = useState(true);
+
+  const [q, setQ] = useState("");
+  const [sort, setSort] = useState("newest");
+  const [priceRange, setPriceRange] = useState([0, 5000000]);
+
+  const fetchCategory = async () => {
+    const res = await listCategory();
+    setDataCategory(res.metadata || []);
+  };
+
+  const fetchProduct = async () => {
+    const res = await listProduct();
+    const products = res.metadata || [];
+    setDataProduct(products.filter((item) => item.isHidden === false));
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      await fetchCategory();
+      await fetchProduct();
+      setLoading(false);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (!selectedCategory) return;
+
+    const run = async () => {
+      setLoading(true);
+      try {
+        if (selectedCategory === "all") {
+          const res = await listProduct();
+          setDataProduct(
+            (res.metadata || []).filter((item) => item.isHidden === false),
+          );
+        } else {
+          const res = await listProductByCategory(selectedCategory);
+          setDataProduct(
+            (res.metadata || []).filter((item) => item.isHidden === false),
+          );
+        }
+      } catch (e) {
+        console.error(e);
+        setDataProduct([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    run();
+  }, [selectedCategory]);
+
+  const menuItems = useMemo(() => {
+    return [
+      {
+        key: "all",
+        icon: <AppstoreOutlined />,
+        label: "Tất cả sản phẩm",
+      },
+      ...dataCategory.map((category) => ({
+        key: category._id,
+        label: category.nameCategory,
+        icon: category.imageCategory ? (
+          <img src={category.imageCategory} alt="" className="shop__catIcon" />
+        ) : (
+          <AppstoreOutlined />
+        ),
+      })),
+    ];
+  }, [dataCategory]);
+
+  const viewProducts = useMemo(() => {
+    const normalizedQ = q.trim().toLowerCase();
+    let arr = [...dataProduct];
+
+    if (normalizedQ) {
+      arr = arr.filter((p) => {
+        const name = (p.nameProduct || "").toLowerCase();
+        const desc = (p.descriptionProduct || "").toLowerCase();
+        return name.includes(normalizedQ) || desc.includes(normalizedQ);
+      });
+    }
+
+    arr = arr.filter((p) => {
+      const price = Number(p.priceProduct || 0);
+      return price >= priceRange[0] && price <= priceRange[1];
+    });
+
+    if (sort === "price_asc") {
+      arr.sort(
+        (a, b) => Number(a.priceProduct || 0) - Number(b.priceProduct || 0),
+      );
+    } else if (sort === "price_desc") {
+      arr.sort(
+        (a, b) => Number(b.priceProduct || 0) - Number(a.priceProduct || 0),
+      );
+    } else {
+      arr.sort((a, b) => {
+        const ta = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const tb = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return tb - ta;
+      });
+    }
+
+    return arr;
+  }, [dataProduct, q, sort, priceRange]);
+
+  const selectedCategoryName =
+    selectedCategory === "all"
+      ? "Bộ sưu tập trà"
+      : dataCategory.find((c) => c._id === selectedCategory)?.nameCategory ||
+        "Sản phẩm";
+
+  const handleReset = () => {
+    setQ("");
+    setPriceRange([0, 5000000]);
+    setSort("newest");
+    setSelectedCategory("all");
+  };
+
+  const getTeaBadge = (item) => {
+    const name = (item.nameProduct || "").toLowerCase();
+    const desc = (item.descriptionProduct || "").toLowerCase();
+    const content = `${name} ${desc}`;
+
+    if (content.includes("matcha")) return "Matcha tuyển chọn";
+    if (content.includes("thảo mộc") || content.includes("ngâm chân"))
+      return "Thảo mộc thư giãn";
+    if (content.includes("combo")) return "Quà tặng tinh tuyển";
+    return "Lá trà nguyên bản";
+  };
+
   return (
-    <div className="stars" aria-label={`${full} stars`}>
-      {"★★★★★".split("").map((s, i) => (
-        <span key={i} className={i < full ? "star on" : "star"}>
-          ★
-        </span>
-      ))}
-    </div>
-  );
-}
-
-export default function Shop() {
-  return (
-    <div className="shop-page">
-      {/* HERO */}
-      <section className="shop-hero">
-        <div className="shop-hero__overlay" />
-        <div className="shop-hero__content">
-          <h1>Organic Tea</h1>
-          <div className="breadcrumb">
-            <span>Home</span> <span className="sep">›</span>{" "}
-            <span>Products</span> <span className="sep">›</span>{" "}
-            <span className="active">Organic Tea</span>
-          </div>
-        </div>
-      </section>
-
-      {/* BODY */}
-      <section className="shop-body">
-        <div className="shop-wrap">
-          {/* SIDEBAR */}
-          <aside className="shop-sidebar">
-            <div className="widget">
-              <div className="search">
-                <input placeholder="Search..." />
-                <button aria-label="search">🔍</button>
+    <div className="container">
+      <div className="shopWrap">
+        <div className="shopContainer">
+          <aside className="shopSidebar">
+            <div className="shopBox shopBrandBox">
+              <div className="shopBoxTitle">
+                <span className="leaf" /> Cửa hàng nhà MediTea
+              </div>
+              <div className="shopIntro">
+                Nơi tuyển chọn những dòng trà thanh vị, dịu hương và gần gũi với
+                nhịp sống hằng ngày.
               </div>
             </div>
 
-            <div className="widget">
-              <h3 className="widget-title">
-                <span className="leaf">🍃</span> Cart <span className="line" />
-              </h3>
-              <p className="muted">No products in the cart.</p>
-            </div>
-
-            <div className="widget">
-              <h3 className="widget-title">
-                <span className="leaf">🍃</span> Categories{" "}
-                <span className="line" />
-              </h3>
-              <ul className="cats">
-                <li>Black Tea</li>
-                <li>Green Tea</li>
-                <li>Organic Tea</li>
-                <li>Uncategorized</li>
-              </ul>
-            </div>
-
-            <div className="widget">
-              <h3 className="widget-title">
-                <span className="leaf">🍃</span> Filter{" "}
-                <span className="line" />
-              </h3>
-
-              <div className="range">
-                <div className="range-bar" />
-                <div className="range-dots">
-                  <span className="dot left" />
-                  <span className="dot right" />
-                </div>
+            <div className="shopBox">
+              <div className="shopBoxTitle">
+                <span className="leaf" /> Danh mục trà
               </div>
+              <div className="shopBoxBody">
+                <Menu
+                  mode="inline"
+                  selectedKeys={[selectedCategory || "all"]}
+                  items={menuItems}
+                  onClick={({ key }) => setSelectedCategory(key)}
+                  className="shopMenu"
+                />
+              </div>
+            </div>
 
-              <div className="price-row">
-                <div className="price-label">
-                  Price: <b>$0</b> — <b>$10</b>
+            <div className="shopBox">
+              <div className="shopBoxTitle">
+                <span className="leaf" /> Chọn mức giá
+              </div>
+              <div className="shopBoxBody">
+                <div className="shopFilterRow">
+                  <div className="shopFilterPrice">
+                    {priceRange[0].toLocaleString()}đ —{" "}
+                    {priceRange[1].toLocaleString()}đ
+                  </div>
+
+                  <Slider
+                    range
+                    value={priceRange}
+                    onChange={setPriceRange}
+                    min={0}
+                    max={5000000}
+                    step={50000}
+                    tooltip={{ open: false }}
+                    className="shopSlider"
+                  />
+
+                  <Button className="shopBtn" onClick={handleReset}>
+                    Đặt lại
+                  </Button>
                 </div>
-                <button className="btn-filter">Filter</button>
               </div>
             </div>
           </aside>
 
-          {/* MAIN */}
-          <main className="shop-main">
-            <div className="shop-topbar">
-              <div className="pill">Showing all {products.length} results</div>
+          <main className="shopMain">
+            <div className="shopTopbar">
+              <div className="shopHeadline">
+                <div className="shopEyebrow">MediTea Collection</div>
+                <div className="shopH1">{selectedCategoryName}</div>
+                <div className="shopSub">
+                  Hiển thị {viewProducts.length} sản phẩm dành cho trải nghiệm
+                  thưởng trà nhẹ nhàng và tinh chọn
+                </div>
+              </div>
 
-              <div className="sort">
-                <select defaultValue="default">
-                  <option value="default">Default sorting</option>
-                  <option value="price-asc">Sort by price: low to high</option>
-                  <option value="price-desc">Sort by price: high to low</option>
-                  <option value="rating">Sort by rating</option>
-                </select>
+              <div className="shopControls">
+                <Input
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  prefix={<SearchOutlined />}
+                  placeholder="Tìm trà, matcha, quà tặng..."
+                  allowClear
+                  className="shopSearch"
+                />
+                <Select value={sort} onChange={setSort} className="shopSort">
+                  <Option value="newest">Sắp xếp mặc định</Option>
+                  <Option value="price_asc">Giá nhỏ tới lớn</Option>
+                  <Option value="price_desc">Giá từ lớn tới nhỏ</Option>
+                </Select>
               </div>
             </div>
 
-            <div className="grid">
-              {products.map((p) => (
-                <div key={p.id} className="card">
-                  <div className="img-wrap">
-                    <img src={p.img} alt={p.name} />
-                  </div>
+            {loading ? (
+              <div className="shopLoading">
+                <Spin size="large" tip="Đang tải sản phẩm..." />
+              </div>
+            ) : viewProducts.length > 0 ? (
+              <div className="shopGrid">
+                {viewProducts.map((item) => {
+                  const price = Number(item.priceProduct || 0);
+                  const img =
+                    item.imagesProduct?.[0] ||
+                    "https://via.placeholder.com/700x700?text=No+Image";
 
-                  <Stars value={p.rating} />
+                  return (
+                    <div key={item._id} className="shopCard">
+                      {/* <div className="shopCardBadge">{getTeaBadge(item)}</div> */}
 
-                  <h4 className="name">{p.name}</h4>
-                  <p className="desc">{p.desc}</p>
-                  <div className="price">{p.price}</div>
-                  <div className="cart">Add to cart</div>
+                      <div
+                        className="shopCardImg"
+                        onClick={() => navigate(`/product/${item._id}`)}
+                      >
+                        <img src={img} alt={item.nameProduct} loading="lazy" />
+                      </div>
+
+                      <div className="shopCardBody">
+                        <Rate disabled defaultValue={4} className="shopStars" />
+
+                        <div
+                          className="shopCardTitle"
+                          onClick={() => navigate(`/product/${item._id}`)}
+                        >
+                          {item.nameProduct}
+                        </div>
+
+                        <div className="shopCardDesc">
+                          {item.descriptionProduct ||
+                            "Hương vị dịu nhẹ, phù hợp cho những phút thư giãn và chăm sóc bản thân mỗi ngày."}
+                        </div>
+
+                        <div className="shopCardBottom">
+                          <div className="shopPrice">
+                            {price.toLocaleString()}đ
+                          </div>
+
+                          <Button
+                            className="shopAdd"
+                            icon={<ShoppingCartOutlined />}
+                            title="Thêm vào giỏ"
+                          >
+                            Thêm
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="shopEmpty">
+                <div className="shopEmptyIcon">🍃</div>
+                <div className="shopEmptyTitle">
+                  Chưa tìm thấy sản phẩm phù hợp
                 </div>
-              ))}
-            </div>
+                <div className="shopEmptySub">
+                  Hãy thử đổi danh mục hoặc điều chỉnh mức giá để khám phá thêm
+                  các dòng trà khác.
+                </div>
+                <Button onClick={handleReset}>Đặt lại bộ lọc</Button>
+              </div>
+            )}
           </main>
         </div>
-      </section>
+      </div>
     </div>
   );
 }
+
+export default Shop;

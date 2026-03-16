@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./philosophy.css";
 
 const items = [
@@ -41,12 +41,33 @@ const items = [
 ];
 
 const Philosophy = () => {
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.1, // Hiện sớm khi 10% phần tử vào màn hình
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("revealed");
+        }
+      });
+    }, observerOptions);
+
+    const elements = document.querySelectorAll(
+      ".scroll-reveal, .scroll-reveal-left, .scroll-reveal-right",
+    );
+    elements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <main className="phi">
       {/* HERO */}
       <section className="phi__hero">
         <div className="phi__overlay" />
-        <div className="phi__container phi__heroInner">
+        <div className="phi__container phi__heroInner scroll-reveal">
           <h1 className="phi__title">Triết lý MediTEA</h1>
           <p className="phi__lead">
             Giá trị của trà không nằm ở việc làm khác đi, mà ở việc để lá đủ năm
@@ -60,17 +81,25 @@ const Philosophy = () => {
       <section className="phi__section">
         <div className="phi__container">
           {items.map((it, idx) => {
-            const reverse = (idx + 1) % 2 === 0; // mục chẵn đảo layout
+            const reverse = (idx + 1) % 2 === 0;
+            // Nếu reverse (mục chẵn), ảnh bên phải chữ bên trái -> Animation ngược lại để cân đối
+            const textAnimClass = reverse
+              ? "scroll-reveal-left"
+              : "scroll-reveal-right";
+            const mediaAnimClass = reverse
+              ? "scroll-reveal-right"
+              : "scroll-reveal-left";
+
             return (
               <article
                 key={it.no}
                 className={`phi__block ${reverse ? "phi__block--reverse" : ""}`}
               >
-                <div className="phi__media">
+                <div className={`phi__media ${mediaAnimClass}`}>
                   <img className="phi__img" src={it.img} alt={it.title} />
                 </div>
 
-                <div className="phi__text">
+                <div className={`phi__text ${textAnimClass}`}>
                   <div className="phi__head">
                     <div className="phi__no">{it.no}</div>
                     <h2 className="phi__h2">{it.title}</h2>
@@ -85,7 +114,7 @@ const Philosophy = () => {
 
       {/* CLOSING BAR */}
       <section className="phi__closing">
-        <div className="phi__container">
+        <div className="phi__container scroll-reveal">
           <div className="phi__closingBar">
             MediTEA làm chậm để giữ đúng: đúng nguyên liệu, đúng nhịp, đúng hậu
             vị.
@@ -97,4 +126,3 @@ const Philosophy = () => {
 };
 
 export default Philosophy;
-``;

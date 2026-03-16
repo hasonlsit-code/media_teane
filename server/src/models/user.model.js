@@ -7,10 +7,11 @@ const userModel = new Schema(
     dob: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    // type: { type: String, required: true, enum: ["login", "loginGoogle"] },
+    // type: { type: String, enum: ["login", "loginGoogle"] },
+    isAdmin: { type: Boolean, default: false },
   },
   {
     timestamps: true,
   },
 );
-module.exports = mongoose.model("User", userModel, "user");
+module.exports = mongoose.model("User", userModel);

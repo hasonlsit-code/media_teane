@@ -14,6 +14,7 @@
     "@react-oauth/google": "^0.13.4",
     "bcrypt": "^6.0.0",
     "body-parser": "^2.2.2",
+    "cloudinary": "^2.9.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.2.4",
@@ -22,8 +23,10 @@
     "googleapis": "^171.4.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.1.6",
+    "multer": "^2.1.0",
     "nodemailer": "^8.0.1",
-    "otp-generator": "^4.0.1"
+    "otp-generator": "^4.0.1",
+    "prettier": "^3.8.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.11"

@@ -1,21 +1,30 @@
-const userModel = require("../models/user.model");
-const bcrypt = require("bcrypt");
-const { createAccessToken, createRefreshToken } = require("../auth/checkAuth");
 const {
+  ConflictRequestError,
   NotFoundError,
   AuthFailureError,
-  ConflictRequestError,
+  BadRequestError,
 } = require("../core/error.response");
-const { OK, Created } = require("../core/success.response");
-const otpGenerator = require("otp-generator");
-const jwt = require("jsonwebtoken");
+const { Created, OK } = require("../core/success.response");
+
+const userModel = require("../models/user.model");
 const otpModel = require("../models/otp.model");
+const jwt = require("jsonwebtoken");
+
+const {
+  createAccessToken,
+  createRefreshToken,
+  verifyToken,
+} = require("../auth/checkAuth");
 const SendMailForgotPassword = require("../utils/mailForgotPassword");
-function setCookie(res, refreshToken, accessToken) {
+
+const bcrypt = require("bcrypt");
+const otpGenerator = require("otp-generator");
+
+function setCookie(res, accessToken, refreshToken) {
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
     secure: true,
-    maxAge: 24 * 60 * 60 * 1000, // 1 days
+    maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day
     sameSite: "strict",
   });
   res.cookie("refreshToken", refreshToken, {
@@ -31,9 +40,10 @@ function setCookie(res, refreshToken, accessToken) {
     sameSite: "strict",
   });
 }
-class UserController {
+
+class UsersController {
   async register(req, res) {
-    const { fullName, email, password, date, dob } = req.body;
+    const { fullName, email, password, date, dob, isAdmin } = req.body;
     const findUser = await userModel.findOne({ email });
     if (findUser) {
       throw new ConflictRequestError("Email đã tồn tại");
@@ -43,16 +53,17 @@ class UserController {
 
     const newUser = await userModel.create({
       fullName,
+      email,
       date,
       dob,
-      email,
       password: hashedPassword,
+      isAdmin,
     });
 
     const accessToken = createAccessToken({ id: newUser._id });
     const refreshToken = createRefreshToken({ id: newUser._id });
 
-    setCookie(res, refreshToken, accessToken);
+    setCookie(res, accessToken, refreshToken);
 
     return new Created({
       message: "Đăng ký thành công",
@@ -80,7 +91,18 @@ class UserController {
 
     return new OK({
       message: "Đăng nhập thành công",
-      metadata: { accessToken, refreshToken },
+      metadata: {
+        accessToken,
+        refreshToken,
+        user: {
+          _id: findUser._id,
+          fullName: findUser.fullName,
+          email: findUser.email,
+          date: findUser.date,
+          dob: findUser.dob,
+          isAdmin: findUser.isAdmin,
+        },
+      },
     }).send(res);
   }
 
@@ -114,32 +136,7 @@ class UserController {
       metadata: findUser,
     }).send(res);
   }
-  async forgotPassword(req, res) {
-    const { email } = req.body;
-    const findUser = await userModel.findOne(email);
-    if (!findUser) {
-      throw new NotFoundError("Người dùng không tồn tại");
-    }
-    const otp = otpGenerator.generate(6, {
-      digits: true,
-      lowerCaseAlphabets: false,
-      upperCaseAlphabets: false,
-      specialChars: false,
-    });
-    const tokenForgotPassword = jwt.sign({ email }, process.env.JWT_SECRET, {
-      expiresIn: "5m",
-    });
-    res.cookie("tokenForgotPassword", tokenForgotPassword, {
-      httpOnly: false,
-      secure: true,
-      maxAge: 5 * 60 * 1000,
-      sameSite: "strict",
-    });
-    await otpModel.create({
-      otp,
-      email,
-    });
-  }
+
   async forgotPassword(req, res) {
     const { email } = req.body;
     const findUser = await userModel.findOne({ email });
@@ -171,7 +168,7 @@ class UserController {
     });
 
     await SendMailForgotPassword(email, otp);
-
+    console.log("otp", otp);
     return new OK({
       message: "Mã OTP đã được gửi đến email của bạn",
       metadata: true,
@@ -211,36 +208,175 @@ class UserController {
       metadata: true,
     }).send(res);
   }
-  async loginGoogle(req, res) {
-    try {
-      const { token } = req.body;
-      if (!token) {
-        return res.status(400).json({ message: "Thiếu token" });
-      }
+  async verifyOTP(req, res) {
+    const { otp } = req.body;
+    const tokenForgotPassword = req.cookies.tokenForgotPassword;
 
-      const payload = await verifyTokenGoogle(token);
-      const { email, name, sub } = payload;
-
-      let account = await userModel.findOne({ email });
-      if (!account) {
-        account = await userModel.create({
-          fullName: name || email,
-          date: new Date().toISOString(),
-          //  dob
-          email: email,
-          password: hashedPassword,
-          type: "loginGoogle",
-        });
-      }
-      return res.status(200).json({
-        message: "Login Google thành công",
-        user: account,
-      });
-    } catch (error) {
-      return res.status(401).json({
-        message: "Google token không hợp lệ",
-      });
+    if (!tokenForgotPassword || !otp) {
+      throw new BadRequestError("Bạn đang thiếu thông tin");
     }
+
+    // giải mã token để lấy email
+    const decoded = jwt.verify(tokenForgotPassword, process.env.JWT_SECRET);
+    if (!decoded) {
+      throw new BadRequestError("Token không hợp lệ");
+    }
+
+    const email = decoded.email;
+
+    // kiểm tra OTP trong database
+    const findOtp = await otpModel.findOne({ email, otp });
+
+    if (!findOtp) {
+      throw new BadRequestError("Mã OTP không hợp lệ");
+    }
+
+    return new OK({
+      message: "Xác thực OTP thành công",
+      metadata: true,
+    }).send(res);
+  }
+  async refreshToken(req, res) {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+      throw new AuthFailureError("Vui lòng đăng nhập lại");
+    }
+    const decoded = await verifyToken(refreshToken);
+    if (!decoded) {
+      throw new AuthFailureError("Vui lòng đăng nhập lại");
+    }
+    const accessToken = createAccessToken({ id: decoded.id });
+    res.cookie("accessToken", accessToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day
+      sameSite: "strict",
+    });
+
+    return new OK({
+      message: "Refresh token thành công",
+      metadata: true,
+    }).send(res);
+  }
+  async getUserById(req, res) {
+    const { userId } = req.params;
+
+    if (!userId) {
+      throw new BadRequestError("Thiếu userId");
+    }
+
+    const findUser = await userModel.findById(userId).select("-password");
+    if (!findUser) {
+      throw new NotFoundError("Không tìm thấy người dùng");
+    }
+
+    return new OK({
+      message: "Lấy người dùng thành công",
+      metadata: findUser,
+    }).send(res);
+  }
+
+  async getAllUser(req, res) {
+    const users = await userModel
+      .find()
+      .select("-password")
+      .sort({ createdAt: -1 });
+
+    return new OK({
+      message: "Lấy danh sách người dùng thành công",
+      metadata: users,
+    }).send(res);
+  }
+
+  async createUser(req, res) {
+    const { fullName, email, password, date, dob, isAdmin } = req.body;
+
+    if (!fullName || !email || !password || !date || !dob) {
+      throw new BadRequestError("Thiếu thông tin user");
+    }
+
+    const findUser = await userModel.findOne({ email });
+    if (findUser) {
+      throw new ConflictRequestError("Email đã tồn tại");
+    }
+
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    const newUser = await userModel.create({
+      fullName,
+      email,
+      password: hashedPassword,
+      date,
+      dob,
+      isAdmin: !!isAdmin,
+    });
+
+    return new Created({
+      message: "Tạo user thành công",
+      metadata: newUser,
+    }).send(res);
+  }
+
+  async updateUser(req, res) {
+    const { userId } = req.params;
+    const { fullName, email, password, date, dob, isAdmin } = req.body;
+
+    if (!userId) {
+      throw new BadRequestError("Thiếu userId");
+    }
+
+    const findUser = await userModel.findById(userId);
+    if (!findUser) {
+      throw new NotFoundError("Không tìm thấy người dùng");
+    }
+
+    if (email && email !== findUser.email) {
+      const existedEmail = await userModel.findOne({ email });
+      if (existedEmail) {
+        throw new ConflictRequestError("Email đã tồn tại");
+      }
+      findUser.email = email;
+    }
+
+    if (fullName !== undefined) findUser.fullName = fullName;
+    if (date !== undefined) findUser.date = date;
+    if (dob !== undefined) findUser.dob = dob;
+    if (typeof isAdmin === "boolean") findUser.isAdmin = isAdmin;
+
+    if (password) {
+      const saltRounds = 10;
+      findUser.password = await bcrypt.hash(password, saltRounds);
+    }
+
+    await findUser.save();
+
+    return new OK({
+      message: "Cập nhật user thành công",
+      metadata: await userModel.findById(userId).select("-password"),
+    }).send(res);
+  }
+
+  async deleteUser(req, res) {
+    const { userId } = req.params;
+
+    if (!userId) {
+      throw new BadRequestError("Thiếu userId");
+    }
+
+    const findUser = await userModel.findById(userId);
+    if (!findUser) {
+      throw new NotFoundError("Không tìm thấy người dùng");
+    }
+
+    await findUser.deleteOne();
+
+    return new OK({
+      message: "Xóa user thành công",
+      metadata: true,
+    }).send(res);
   }
 }
-module.exports = new UserController();
+
+module.exports = new UsersController();
