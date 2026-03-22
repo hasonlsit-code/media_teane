@@ -1,44 +1,25 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import PacmanLoader from "react-spinners/PacmanLoader";
-import { fetchAccountAPI } from "services/api";
 
-interface IAppContext {
-  isAuthenticated: boolean;
-  setIsAuthenticated: (v: boolean) => void;
-  setUser: (v: IUser | null) => void;
-  user: IUser | null;
-  isAppLoading: boolean;
-  setIsAppLoading: (v: boolean) => void;
-}
-type DetailUserProps = {
-  openDetail: boolean;
-  setOpenDetail: React.Dispatch<React.SetStateAction<boolean>>;
-  dataViewDetail: IUserTable | null;
-  setDataViewDetail: React.Dispatch<React.SetStateAction<IUserTable | null>>;
-};
+const CurrentAppContext = createContext(null);
 
-const CurrentAppContext = createContext<IAppContext | null>(null);
-
-type TProps = {
-  children: React.ReactNode;
-};
-
-export const AppProvider = (props: TProps) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [user, setUser] = useState<IUser | null>(null);
-  const [isAppLoading, setIsAppLoading] = useState<boolean>(true);
+export const AppProvider = (props) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [user, setUser] = useState(null);
+  const [isAppLoading, setIsAppLoading] = useState(true);
 
   useEffect(() => {
-    const fetchAccount = async () => {
-      const res = await fetchAccountAPI();
-      if (res.data) {
-        setUser(res.data.user);
+    const stored = localStorage.getItem("user");
+    const token = localStorage.getItem("token");
+    if (stored && token) {
+      try {
+        setUser(JSON.parse(stored));
         setIsAuthenticated(true);
+      } catch (e) {
+        console.error("Failed to parse user from localStorage", e);
       }
-      setIsAppLoading(false);
-    };
-
-    fetchAccount();
+    }
+    setIsAppLoading(false);
   }, []);
 
   return (
