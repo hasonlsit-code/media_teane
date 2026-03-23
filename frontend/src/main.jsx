@@ -39,7 +39,7 @@ import ProductPage from "./pages/client/ProductPage.jsx";
 import Cart from "./pages/cart/EbayCart.jsx";
 import Checkout from "./pages/cart/Checkout.jsx";
 import PaymentSuccess from "./pages/cart/PaymentSuccess.jsx";
-import Homepage from "./components/HomePage.jsx";
+import Homepage from "./components/Homepage.jsx";
 import AboutPage from "./pages/client/AboutPage.jsx";
 import BanchaPage from "./pages/client/BanchaPage.jsx";
 import ProductMain from "./components/homepage/ProductMain.jsx";
