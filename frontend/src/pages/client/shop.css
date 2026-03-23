@@ -1,6 +1,6 @@
 /* shop.css */
 .container {
-  margin-top: 140px;
+  width: 100%;
   background:
     radial-gradient(
       circle at top left,

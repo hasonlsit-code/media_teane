@@ -1,15 +1,39 @@
 import "../App.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { UserOutlined, LogoutOutlined, EditOutlined } from "@ant-design/icons";
 import { useState, useEffect, useRef } from "react";
 import { requestLogout } from "../config/UserRequest";
+import { requestGetCart } from "../config/CartRequest";
 
 function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [user, setUser] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Helper function to check if link is active
+  const isActive = (path) => {
+    if (path === "/") {
+      return location.pathname === "/";
+    }
+    return location.pathname.startsWith(path);
+  };
+
+  // Fetch cart count when user exists
+  const fetchCartCount = async () => {
+    try {
+      const res = await requestGetCart();
+      const items = res?.metadata?.cart?.products || [];
+      const total = items.reduce((sum, item) => sum + (item.quantity || 1), 0);
+      setCartCount(total);
+    } catch (error) {
+      console.log("Failed to fetch cart:", error);
+      setCartCount(0);
+    }
+  };
 
   const loadUserFromStorage = () => {
     try {
@@ -33,6 +57,27 @@ function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+
+  // Fetch cart count when user logs in or cart updates
+  useEffect(() => {
+    if (user) {
+      fetchCartCount();
+    } else {
+      setCartCount(0);
+    }
+  }, [user]);
+
+  // Listen for cart updates
+  useEffect(() => {
+    const handleCartChanged = () => {
+      if (user) {
+        fetchCartCount();
+      }
+    };
+
+    window.addEventListener("cartChanged", handleCartChanged);
+    return () => window.removeEventListener("cartChanged", handleCartChanged);
+  }, [user]);
   // Load user when mount
   useEffect(() => {
     loadUserFromStorage();
@@ -72,6 +117,7 @@ function Header() {
 
     setUser(null);
     setDropdownOpen(false);
+    setCartCount(0);
     window.dispatchEvent(new Event("userChanged"));
     navigate("/");
   };
@@ -81,6 +127,16 @@ function Header() {
     navigate("/edit-profile");
   };
 
+  // Hide header on shop and product detail pages
+  const hideHeaderPages = ["/shop", "/product"];
+  const shouldHideHeader = hideHeaderPages.some(page => 
+    location.pathname === page || location.pathname.startsWith(page + "/")
+  );
+
+  if (shouldHideHeader) {
+    return null;
+  }
+
   return (
     <header className={`hero__header ${scrolled ? "header--scrolled" : ""}`}>
       <Link to="/" className="header__brand">
@@ -89,13 +145,13 @@ function Header() {
       </Link>
 
       <nav className="header__nav">
-        <Link className="nav__link active" to="/">
+        <Link className={`nav__link ${isActive("/") ? "active" : ""}`} to="/">
           Trang chủ
         </Link>
-        <Link className="nav__link" to="/about">
+        <Link className={`nav__link ${isActive("/about") ? "active" : ""}`} to="/about">
           MediTea
         </Link>
-        <Link className="nav__link" to="/shop">
+        <Link className={`nav__link ${isActive("/shop") ? "active" : ""}`} to="/shop">
           Sản phẩm
         </Link>
         <a className="nav__link" href="#">
@@ -129,11 +185,19 @@ function Header() {
       </nav>
 
       <div className="header__actions">
-        {/* <button className="iconBtn" aria-label="Search">
-          <svg viewBox="0 0 24 24" className="icon">
-            <path d="M10 4a6 6 0 104.24 10.24l4.26 4.26 1.42-1.42-4.26-4.26A6 6 0 0010 4zm0 2a4 4 0 110 8 4 4 0 010-8z" />
-          </svg>
-        </button> */}
+        {user && (
+          <button
+            className="iconBtn"
+            aria-label="Cart"
+            onClick={() => navigate("/cart")}
+            title={`Giỏ hàng (${cartCount} sản phẩm)`}
+          >
+            {cartCount > 0 && <span className="badge">{cartCount}</span>}
+            <svg viewBox="0 0 24 24" className="icon">
+              <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2S15.9 22 17 22s2-.9 2-2-.9-2-2-2zM6.2 6l.6 3h12.7l-1.2 6H7.4l-.3-1.5H5.1L4 3H2V1h3.6l.6 3h13.9v2H6.2z" />
+            </svg>
+          </button>
+        )}
 
         {user ? (
           <div className="header__user-menu" ref={dropdownRef}>

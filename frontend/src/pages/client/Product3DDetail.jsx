@@ -1,8 +1,8 @@
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, useGLTF, Stage, Html } from "@react-three/drei";
-import { Button, Spin, Typography } from "antd";
+import { Button, Spin, Typography, Select, Space } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { MODELS_3D } from "../../data/models3d";
 
@@ -16,21 +16,28 @@ function Model({ url }) {
 export default function Product3DDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [selectedModelId, setSelectedModelId] = useState(id || null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const modelData = MODELS_3D.find((m) => m.id === id);
+  // Try to find model by id, if not found use the provided id or first model
+  let modelData = MODELS_3D.find((m) => m.id === selectedModelId);
+  
+  // If model not found, use first model as fallback
+  if (!modelData && MODELS_3D.length > 0) {
+    modelData = MODELS_3D[0];
+  }
 
   if (!modelData) {
     return (
       <div
         style={{ padding: "100px 5%", textAlign: "center", minHeight: "70vh" }}
       >
-        <Title level={3}>Không tìm thấy sản phẩm 3D</Title>
-        <Button type="primary" onClick={() => navigate("/3d-products")}>
-          Quay lại danh sách
+        <Title level={3}>Không có mô hình 3D khả dụng</Title>
+        <Button type="primary" onClick={() => navigate("/shop")}>
+          Quay lại sản phẩm
         </Button>
       </div>
     );
@@ -43,32 +50,47 @@ export default function Product3DDetail() {
       style={{
         display: "flex",
         flexDirection: "column",
-        height: "calc(100vh - 80px)",
+        height: "100vh",
         background: "#f5f5f5",
       }}
     >
       {/* Header */}
       <div
         style={{
+          display: "none",
           padding: "15px 5%",
           background: "#fff",
-          display: "flex",
           alignItems: "center",
+          justifyContent: "space-between",
           boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
           zIndex: 10,
         }}
       >
-        <Button
-          icon={<ArrowLeftOutlined />}
-          onClick={() => navigate("/3d-products")}
-          type="text"
-          style={{ marginRight: "15px" }}
-        >
-          Quay lại danh sách
-        </Button>
-        <Title level={4} style={{ margin: 0 }}>
-          {modelData.title}
-        </Title>
+        <Space>
+          <Button
+            icon={<ArrowLeftOutlined />}
+            onClick={() => navigate(-1)}
+            type="text"
+          >
+            Quay lại
+          </Button>
+          <Title level={4} style={{ margin: 0 }}>
+            {modelData.title}
+          </Title>
+        </Space>
+        
+        {MODELS_3D.length > 1 && (
+          <Select
+            style={{ width: 200 }}
+            value={selectedModelId}
+            onChange={setSelectedModelId}
+            options={MODELS_3D.map((m) => ({
+              label: m.title,
+              value: m.id,
+            }))}
+            placeholder="Chọn mô hình"
+          />
+        )}
       </div>
 
       {/* 3D Canvas Container */}
@@ -85,7 +107,7 @@ export default function Product3DDetail() {
             }
           >
             <Stage environment="city" intensity={0.5}>
-              <Model url={modelUrl} />
+              <Model key={modelUrl} url={modelUrl} />
             </Stage>
           </Suspense>
           <OrbitControls

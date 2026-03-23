@@ -1,4 +1,5 @@
 .productDetailContainer {
+  width: 100%;
   padding: 36px 0 72px;
   background:
     radial-gradient(
@@ -13,6 +14,22 @@
     ),
     linear-gradient(180deg, #fcfaf5 0%, #f5f0e6 100%);
   min-height: 100vh;
+}
+
+.productDetailWrapper {
+  width: 100%;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(163, 182, 104, 0.12),
+      transparent 24%
+    ),
+    radial-gradient(
+      circle at top right,
+      rgba(197, 177, 126, 0.1),
+      transparent 20%
+    ),
+    linear-gradient(180deg, #fcfaf5 0%, #f5f0e6 100%);
 }
 
 .productDetailWrap {
@@ -209,10 +226,17 @@
   color: #342b20;
 }
 
+.productDetailQtyControls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
 .productDetailQtyBox {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
 }
 
 .productDetailQtyBox .ant-btn {
@@ -329,6 +353,30 @@
   gap: 16px;
 }
 
+.productDetailView3DBtn {
+  background: linear-gradient(135deg, #8aa84d 0%, #a4c966 100%);
+  border-color: #8aa84d !important;
+  color: #fff !important;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(138, 168, 77, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.productDetailView3DBtn:hover {
+  background: linear-gradient(135deg, #7a9840 0%, #94b858 100%);
+  border-color: #7a9840 !important;
+  color: #fff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(138, 168, 77, 0.3);
+}
+
+.productDetailView3DBtn:active {
+  transform: translateY(0);
+}
+
 @media (max-width: 1200px) {
   .productDetailTitle {
     font-size: 40px;
@@ -403,6 +451,16 @@
   .productDetailCartBtn,
   .productDetailGhostBtn {
     width: 100%;
+  }
+
+  .productDetailQtyControls {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .productDetailView3DBtn {
+    width: 100%;
+    justify-content: center;
   }
 
   .productDetailExtra {

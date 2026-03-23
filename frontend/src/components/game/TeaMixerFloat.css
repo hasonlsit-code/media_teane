@@ -40,16 +40,11 @@
 }
 
 @keyframes gameFabPulse {
-  0%,
-  100% {
-    box-shadow:
-      0 4px 16px rgba(106, 158, 53, 0.45),
-      0 0 0 0 rgba(106, 158, 53, 0.3);
+  0%, 100% {
+    box-shadow: 0 4px 16px rgba(106, 158, 53, 0.45), 0 0 0 0 rgba(106, 158, 53, 0.3);
   }
   50% {
-    box-shadow:
-      0 4px 16px rgba(106, 158, 53, 0.45),
-      0 0 0 10px rgba(106, 158, 53, 0);
+    box-shadow: 0 4px 16px rgba(106, 158, 53, 0.45), 0 0 0 10px rgba(106, 158, 53, 0);
   }
 }
 
@@ -83,9 +78,7 @@
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
-  transition:
-    opacity 0.3s ease,
-    transform 0.3s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
   font-family: "Inter", sans-serif;
   font-size: 12px;
   font-weight: 600;
@@ -128,77 +121,35 @@
 }
 
 @keyframes overlayFadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .game-overlay-content {
   width: 96vw;
-  max-width: 1440px;
+  max-width: none; /* Removed 1440px limit to allow full stretch */
   max-height: 94vh;
-  overflow-y: auto;
+  display: flex;
+  overflow: hidden; /* Let the game container handle its own scrolling */
   border-radius: 20px;
-  background: #fafcf7;
-  box-shadow:
-    0 24px 80px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(106, 158, 53, 0.1);
+  background: transparent;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0,0,0,0.2);
   position: relative;
   animation: overlaySlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes overlaySlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px) scale(0.97);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.game-overlay-content::-webkit-scrollbar {
-  width: 6px;
-}
-
-.game-overlay-content::-webkit-scrollbar-thumb {
-  background: rgba(106, 158, 53, 0.3);
-  border-radius: 3px;
-}
-
-.game-overlay-close {
-  position: sticky;
-  top: 12px;
-  float: right;
-  margin: 12px 16px 0 0;
-  padding: 8px 18px;
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  color: #888;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 600;
-  font-family: "Inter", sans-serif;
-  z-index: 10;
-  transition: all 0.2s;
-}
-
-.game-overlay-close:hover {
-  background: #fee;
-  border-color: #e76f51;
-  color: #e76f51;
+  from { opacity: 0; transform: translateY(30px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* Override dark theme inside overlay */
 .game-overlay .tea-mixer-page {
   min-height: auto;
+  height: 94vh; /* Match the overlay content max height */
+  width: 100%; /* Force full width coverage */
   background: transparent;
-  padding: 8px 24px 24px;
+  padding: 0; /* Removing the padding causing white edges! */
 }
 
 /* ─── Responsive ────────────────────────────────────── */

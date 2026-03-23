@@ -212,8 +212,11 @@ body {
 .nav__link {
   color: rgba(233, 238, 240, 0.92);
   text-decoration: none;
-  transition: 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  padding: 8px 16px;
+  border-radius: 999px;
+  position: relative;
 }
 
 .header--scrolled .nav__link {
@@ -222,9 +225,15 @@ body {
 
 .nav__link:hover {
   color: #fff;
+  background: rgba(134, 180, 63, 0.15);
 }
+
 .nav__link.active {
   color: var(--green);
+  background: rgba(134, 180, 63, 0.25);
+  border: 1.5px solid var(--green);
+  box-shadow: 0 0 12px rgba(134, 180, 63, 0.4), inset 0 0 8px rgba(134, 180, 63, 0.1);
+  font-weight: 500;
 }
 .nav__dropdown {
   display: flex;

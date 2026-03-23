@@ -18,6 +18,7 @@ import {
   ShareAltOutlined,
   MinusOutlined,
   PlusOutlined,
+  CodeSandboxOutlined,
 } from "@ant-design/icons";
 
 import { productDetail } from "../../config/ProductRequest";
@@ -100,6 +101,7 @@ function ProductDetail() {
       await requestAddToCart(body);
 
       message.success("Thêm vào giỏ hàng thành công");
+      window.dispatchEvent(new Event("cartChanged"));
       navigate("/cart");
     } catch (error) {
       console.log(error);
@@ -147,7 +149,7 @@ function ProductDetail() {
   const price = Number(product.priceProduct || 0);
 
   return (
-    <div style={{ marginTop: "140px" }}>
+    <div className="productDetailWrapper">
       <div className="productDetailContainer">
         <div className="productDetailWrap">
           <Breadcrumb
@@ -223,15 +225,27 @@ function ProductDetail() {
 
                 <div className="productDetailQuantity">
                   <span className="productDetailQuantityLabel">Số lượng</span>
-                  <div className="productDetailQtyBox">
-                    <Button icon={<MinusOutlined />} onClick={handleDecrease} />
-                    <InputNumber
-                      min={1}
-                      max={Number(product.stockProduct || 1)}
-                      value={quantity}
-                      onChange={(value) => setQuantity(value || 1)}
-                    />
-                    <Button icon={<PlusOutlined />} onClick={handleIncrease} />
+                  <div className="productDetailQtyControls">
+                    <div className="productDetailQtyBox">
+                      <Button icon={<MinusOutlined />} onClick={handleDecrease} />
+                      <InputNumber
+                        min={1}
+                        max={Number(product.stockProduct || 1)}
+                        value={quantity}
+                        onChange={(value) => setQuantity(value || 1)}
+                      />
+                      <Button icon={<PlusOutlined />} onClick={handleIncrease} />
+                    </div>
+                    <Button
+                      type="default"
+                      size="large"
+                      icon={<CodeSandboxOutlined />}
+                      title="Xem mô hình 3D"
+                      onClick={() => navigate(`/3d-products/${id}`)}
+                      className="productDetailView3DBtn"
+                    >
+                      View 3D
+                    </Button>
                   </div>
                 </div>
 

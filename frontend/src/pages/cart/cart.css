@@ -1,4 +1,22 @@
+.cartPageWrapper {
+  width: 100%;
+  margin-top: 140px;
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(163, 181, 104, 0.12),
+      transparent 24%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(198, 175, 127, 0.12),
+      transparent 22%
+    ),
+    linear-gradient(180deg, #fcfaf5 0%, #f5efe4 100%);
+}
+
 .cartPage {
+  width: 100%;
   min-height: 100vh;
   padding: 38px 0 72px;
   position: relative;

@@ -60,7 +60,8 @@ function Cart() {
         newQuantity,
       });
       message.success("Cập nhật số lượng thành công");
-      fetchCart();
+      await fetchCart();
+      window.dispatchEvent(new Event("cartChanged"));
     } catch (error) {
       console.log(error);
       message.error(
@@ -73,7 +74,8 @@ function Cart() {
     try {
       await requestDeleteProductCart(productId);
       message.success("Xóa sản phẩm khỏi giỏ hàng thành công");
-      fetchCart();
+      await fetchCart();
+      window.dispatchEvent(new Event("cartChanged"));
     } catch (error) {
       console.log(error);
       message.error(error?.response?.data?.message || "Xóa sản phẩm thất bại");
@@ -89,7 +91,7 @@ function Cart() {
   }
 
   return (
-    <div style={{ marginTop: "140px" }}>
+    <div className="cartPageWrapper">
       <div className="cartPage">
         <div className="cartDecor cartDecorLeft" />
         <div className="cartDecor cartDecorRight" />

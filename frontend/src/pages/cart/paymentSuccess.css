@@ -1,5 +1,7 @@
 .payment-success-page {
+  width: 100%;
   min-height: 100vh;
+  margin-top: 140px;
   padding: 38px 0 72px;
   position: relative;
   overflow: hidden;
@@ -18,7 +20,9 @@
 }
 
 .payment-page {
+  width: 100%;
   min-height: 100vh;
+  margin-top: 140px;
   background:
     radial-gradient(
       circle at top left,
