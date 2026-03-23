@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 require("dotenv").config();
 const bodyParser = require("body-parser");
@@ -18,7 +18,15 @@ app.use(
   }),
 );
 app.use(cookieParser());
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(cors({ 
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:3000",
+    "https://media-tea04.vercel.app",
+    "https://*.vercel.app"
+  ], 
+  credentials: true 
+}));
 connectDB();
 app.get("/", (req, res) => {
   return res.json({
