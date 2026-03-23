@@ -1,10 +1,9 @@
 {
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
-  "trailingSlash": false,
   "rewrites": [
     {
-      "source": "/(?!.*\\.(js|css|map|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|json))",
+      "source": "/:path((?!.*\\.).*)",
       "destination": "/index.html"
     }
   ]
