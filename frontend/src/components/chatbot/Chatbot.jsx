@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios"; // Đừng quên: npm install axios
-import "./ChatBot.css";
+import "./Chatbot.css";
 
 const defaultSuggestions = [
   "Trà xanh giảm cân",
