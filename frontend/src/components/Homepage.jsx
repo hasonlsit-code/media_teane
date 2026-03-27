@@ -36,7 +36,7 @@ export function useScrollReveal() {
   }, []);
 }
 
-const  HomePage = () => {
+function HomePage() {
   useScrollReveal();
 
   return (
