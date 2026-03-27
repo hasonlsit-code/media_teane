@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "../App.css";
 
 export default function Footer() {
@@ -32,12 +33,12 @@ export default function Footer() {
 
         {/* Navigation links */}
         <nav className="ft__nav">
-          <a href="/contact">Liên hệ</a>
-          <a href="/media">Tư liệu truyền thông</a>
-          <a href="/privacy">Chính sách bảo mật</a>
-          <a href="/terms">Điều khoản và điều kiện</a>
-          <a href="/blog">Blog</a>
-          <a href="/faq">Câu hỏi thường gặp</a>
+          <Link to="/contact">Liên hệ</Link>
+          <Link to="/media">Tư liệu truyền thông</Link>
+          <Link to="/privacy">Chính sách bảo mật</Link>
+          <Link to="/terms">Điều khoản và điều kiện</Link>
+          <Link to="/blog">Blog</Link>
+          <Link to="/faq">Câu hỏi thường gặp</Link>
         </nav>
 
         {/* Email subscribe */}

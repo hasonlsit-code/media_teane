@@ -4,6 +4,7 @@ import PanoramaViewer from "./PanoramaViewer";
 
 function Slide() {
   const [isPlaying, setIsPlaying] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
   const [showPanorama, setShowPanorama] = useState(false);
   const videoRef = useRef(null);
 
@@ -27,7 +28,7 @@ function Slide() {
         className="hero__video-bg"
         autoPlay
         loop
-        muted
+        muted={isMuted}
         playsInline
         onEnded={(e) => {
           e.target.currentTime = 0;
@@ -39,6 +40,33 @@ function Slide() {
 
       {/* Light gradient overlay to ensure text readability */}
       <div className="hero__video-overlay" />
+
+      {/* Audio Toggle Button at middle left */}
+      <button
+        className="hero__audio-toggle"
+        onClick={() => setIsMuted(!isMuted)}
+        aria-label={isMuted ? "Bật âm thanh" : "Tắt âm thanh"}
+        style={{
+          position: "absolute",
+          top: "50%",
+          transform: "translateY(-50%)",
+          left: "20px",
+          background: "rgba(0, 0, 0, 0.4)",
+          border: "1px solid rgba(255,255,255,0.3)",
+          borderRadius: "50%",
+          color: "white",
+          width: "44px",
+          height: "44px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+          zIndex: 10,
+          fontSize: "20px"
+        }}
+      >
+        {isMuted ? "🔇" : "🔊"}
+      </button>
 
       {/* ── Center Content ── */}
       <div className="hero__content-center">

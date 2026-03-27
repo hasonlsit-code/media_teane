@@ -152,6 +152,14 @@ function ProductDetail() {
     <div className="productDetailWrapper">
       <div className="productDetailContainer">
         <div className="productDetailWrap">
+          <Button 
+            type="text" 
+            icon={<HomeOutlined />} 
+            onClick={() => navigate('/')}
+            style={{ marginBottom: '16px', fontWeight: 500, paddingLeft: 0 }}
+          >
+            Quay về trang chủ
+          </Button>
           <Breadcrumb
             className="productDetailBreadcrumb"
             items={[

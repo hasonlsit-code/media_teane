@@ -151,7 +151,7 @@ export default function ProductList() {
           {renderRow(row2, 3)}
         </div>
 
-        <Link to="/bancha-detail" className="ps__btn scroll-reveal">
+        <Link to="/story-2" className="ps__btn scroll-reveal">
           Tìm hiểu chi tiết <span className="ps__btn-dot" aria-hidden="true" />
         </Link>
       </div>
@@ -164,11 +164,7 @@ export default function ProductList() {
         <div className="collection__parallax-content scroll-reveal-left">
           <h2 className="collection__parallax-title">TRẢI NGHIỆM</h2>
           <p className="collection__parallax-desc">
-            MediTea là một thế giới trong lòng thế giới với giai điệu, cuộc sống
-            và những vận động của riêng mình. Đi trek đường mòn xuyên rừng già,
-            thư giãn trên mặt hồ, hay thiền tịnh tại đồi cao... mỗi trải nghiệm
-            không chỉ để cảm nhận vẻ đẹp vùng Tây Bắc mà còn là hành trình tìm
-            thấy chính mình giữa thiên nhiên.
+            Trà MediTEA được làm trong một không gian mở, nơi sân vườn, cây cối và thiên nhiên hòa vào từng công đoạn. Giữa tiếng gió, tiếng chim và mùi lá trà tươi, quá trình làm trà diễn ra chậm rãi, mộc mạc và rất thật. Không chỉ là sản phẩm, đó còn là một trải nghiệm – nơi bạn có thể cảm nhận rõ ràng sự kết nối giữa trà và thiên nhiên.
           </p>
           {/* <a href="/experience" className="collection__parallax-link">
             TÌM HIỂU THÊM

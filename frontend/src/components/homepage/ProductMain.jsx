@@ -1,6 +1,8 @@
+import { useState } from "react";
 import "../../App.css";
 
 export default function ProductMain() {
+  const [videoOpen, setVideoOpen] = useState(false);
   return (
     <>
       <section className="experience" id="product-main-section">
@@ -163,18 +165,19 @@ export default function ProductMain() {
             </div>
 
             <div className="core-values__actions">
-              <a
-                href="/journey"
+              <button
+                onClick={() => setVideoOpen(true)}
                 className="core-values__btn core-values__btn--dark"
+                style={{ cursor: 'pointer', border: 'none' }}
               >
-                Khám phá hành trình làm trà
+                Khám phá xưởng làm trà
                 <span className="core-values__btn-icon">›</span>
-              </a>
+              </button>
               <a
-                href="/3d-products"
+                href="/bancha-detail"
                 className="core-values__btn core-values__btn--light"
               >
-                Thư viện sản phẩm 3D
+                Tìm hiểu thêm
                 <span className="core-values__btn-icon">›</span>
               </a>
             </div>
@@ -191,6 +194,37 @@ export default function ProductMain() {
           </div>
         </div>
       </section>
+
+      {videoOpen && (
+        <div 
+          style={{
+            position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', 
+            backgroundColor: 'rgba(0,0,0,0.85)', zIndex: 100000, 
+            display: 'flex', justifyContent: 'center', alignItems: 'center'
+          }}
+          onClick={() => setVideoOpen(false)}
+        >
+          <div 
+            style={{ position: 'relative', width: '90%', maxWidth: '1000px', backgroundColor: '#000', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button 
+              style={{
+                position: 'absolute', top: '-50px', right: '-10px', 
+                background: 'transparent', border: 'none', color: '#fff', 
+                fontSize: '40px', cursor: 'pointer', padding: '10px',
+                transition: 'opacity 0.3s'
+              }}
+              onMouseEnter={(e) => e.target.style.opacity = '0.7'}
+              onMouseLeave={(e) => e.target.style.opacity = '1'}
+              onClick={() => setVideoOpen(false)}
+            >
+              ×
+            </button>
+            <video src="/images/VR_X.mp4" controls autoPlay style={{ width: '100%', display: 'block' }} />
+          </div>
+        </div>
+      )}
     </>
   );
 }

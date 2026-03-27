@@ -224,16 +224,16 @@ body {
 }
 
 .nav__link:hover {
-  color: #fff;
-  background: rgba(134, 180, 63, 0.15);
+  color: #957159 !important;
+  background: rgba(149, 113, 89, 0.1) !important;
 }
 
 .nav__link.active {
-  color: var(--green);
-  background: rgba(134, 180, 63, 0.25);
-  border: 1.5px solid var(--green);
-  box-shadow: 0 0 12px rgba(134, 180, 63, 0.4), inset 0 0 8px rgba(134, 180, 63, 0.1);
-  font-weight: 500;
+  color: #957159 !important;
+  background: rgba(149, 113, 89, 0.15) !important;
+  border: 1.5px solid #957159 !important;
+  box-shadow: 0 0 12px rgba(149, 113, 89, 0.2), inset 0 0 8px rgba(149, 113, 89, 0.1) !important;
+  font-weight: 600 !important;
 }
 .nav__dropdown {
   display: flex;

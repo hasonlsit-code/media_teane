@@ -5,6 +5,7 @@ import {
   AppstoreOutlined,
   SearchOutlined,
   ShoppingCartOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
 import "./shop.css";
 import {
@@ -159,6 +160,14 @@ function Shop() {
       <div className="shopWrap">
         <div className="shopContainer">
           <aside className="shopSidebar">
+            <Button 
+              type="text" 
+              icon={<HomeOutlined />} 
+              onClick={() => navigate('/')}
+              style={{ marginBottom: '16px', fontWeight: 500, paddingLeft: 0 }}
+            >
+              Quay về trang chủ
+            </Button>
             <div className="shopBox shopBrandBox">
               <div className="shopBoxTitle">
                 <span className="leaf" /> Cửa hàng nhà MediTea

@@ -1,10 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "../../App.css";
 import { useScrollReveal } from "../../components/Homepage";
 import { Link } from "react-router-dom";
 
 export default function BanchaPage() {
   useScrollReveal();
+  const [showVideo, setShowVideo] = useState(false);
 
   // Scroll to top when the component mounts
   useEffect(() => {
@@ -154,10 +155,10 @@ export default function BanchaPage() {
             tour 360°, từ khâu chọn lá đến khi trà hoàn thiện – để hiểu rõ hơn
             điều tạo nên một chén MediTEA.
           </p>
-          <a href="#" className="core-values__btn">
+          <button onClick={(e) => { e.preventDefault(); setShowVideo(true); }} className="core-values__btn" style={{ backgroundColor: '#957159', color: '#fff', border: 'none', cursor: 'pointer', fontFamily: 'inherit', padding: '12px 32px', borderRadius: '30px', fontWeight: 'bold' }}>
             Tham gia Tour 360°
             <span className="core-values__btn-icon">›</span>
-          </a>
+          </button>
         </div>
       </section>
 
@@ -167,13 +168,31 @@ export default function BanchaPage() {
           Thưởng thức trọn vẹn hương vị Bancha
         </h2>
         <Link
-          to="/products"
+          to="/shop"
           className="core-values__btn core-values__btn--dark"
         >
           Mua ngay
           <span className="core-values__btn-icon">›</span>
         </Link>
       </section>
+
+      {/* Video Modal */}
+      {showVideo && (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(0,0,0,0.9)', zIndex: 99999, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <button 
+            onClick={() => setShowVideo(false)}
+            style={{ position: 'absolute', top: '20px', right: '40px', background: 'transparent', border: 'none', color: '#fff', fontSize: '40px', cursor: 'pointer', zIndex: 100000 }}
+          >
+            ×
+          </button>
+          <video 
+            src="/images/VR_X.mp4" 
+            controls 
+            autoPlay 
+            style={{ width: '90%', maxWidth: '1200px', maxHeight: '90vh', backgroundColor: '#000' }}
+          />
+        </div>
+      )}
     </div>
   );
 }

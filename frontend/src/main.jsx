@@ -44,6 +44,14 @@ import AboutPage from "./pages/client/AboutPage.jsx";
 import BanchaPage from "./pages/client/BanchaPage.jsx";
 import ProductMain from "./components/homepage/ProductMain.jsx";
 import ProductList from "./components/homepage/ProductList.jsx";
+import FAQ from "./pages/client/FAQ.jsx";
+import Contact from "./pages/client/Contact.jsx";
+import Media from "./pages/client/Media.jsx";
+import Blog from "./pages/client/Blog.jsx";
+import BlogDetail from "./pages/client/BlogDetail.jsx";
+import PrivacyPolicy from "./pages/client/PrivacyPolicy.jsx";
+import TermsOfService from "./pages/client/TermsOfService.jsx";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -93,6 +101,34 @@ const router = createBrowserRouter([
       {
         path: "cart",
         element: <Cart />,
+      },
+      {
+        path: "faq",
+        element: <FAQ />,
+      },
+      {
+        path: "contact",
+        element: <Contact />,
+      },
+      {
+        path: "media",
+        element: <Media />,
+      },
+      {
+        path: "privacy",
+        element: <PrivacyPolicy />,
+      },
+      {
+        path: "terms",
+        element: <TermsOfService />,
+      },
+      {
+        path: "blog",
+        element: <Blog />,
+      },
+      {
+        path: "blog/:id",
+        element: <BlogDetail />,
       },
       {
         path: "checkout",

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Button, InputNumber, Spin, message, Empty, Popconfirm } from "antd";
+import { HomeOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { Leaf, ShoppingBag, TicketPercent } from "lucide-react";
 import {
@@ -97,6 +98,14 @@ function Cart() {
         <div className="cartDecor cartDecorRight" />
 
         <div className="cartWrap">
+          <Button 
+            type="text" 
+            icon={<HomeOutlined />} 
+            onClick={() => navigate('/')}
+            style={{ marginBottom: '12px', fontWeight: 500, paddingLeft: 0, color: '#6f8a31' }}
+          >
+            Quay về trang chủ
+          </Button>
           <div className="cartHeader">
             <div className="cartEyebrow">MediTea Cart</div>
             <h2 className="cartTitle">Giỏ trà của bạn</h2>
