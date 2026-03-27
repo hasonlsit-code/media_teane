@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { Button, InputNumber, Spin, message, Empty, Popconfirm } from "antd";
+import { Button, InputNumber, Spin, message, Empty, Popconfirm, Input } from "antd";
 import { useNavigate } from "react-router-dom";
 import { Leaf, ShoppingBag, TicketPercent } from "lucide-react";
 import {
   requestDeleteProductCart,
   requestGetCart,
   requestUpdateQuantity,
+  requestApplyCounpon,
 } from "../../config/CartRequest";
 import "./cart.css";
 
@@ -13,6 +14,8 @@ function Cart() {
   const [cart, setCart] = useState(null);
   const [coupons, setCoupons] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
+  const [applyingCoupon, setApplyingCoupon] = useState(false);
   const navigate = useNavigate();
 
   const fetchCart = async () => {
@@ -77,6 +80,23 @@ function Cart() {
     } catch (error) {
       console.log(error);
       message.error(error?.response?.data?.message || "Xóa sản phẩm thất bại");
+    }
+  };
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) {
+      return message.warning("Vui lòng nhập mã giảm giá");
+    }
+    setApplyingCoupon(true);
+    try {
+      await requestApplyCounpon({ couponCode: couponCode.trim() });
+      message.success("Áp dụng mã giảm giá thành công");
+      setCouponCode("");
+      fetchCart();
+    } catch (error) {
+      message.error(error?.response?.data?.message || "Áp dụng mã giảm giá thất bại");
+    } finally {
+      setApplyingCoupon(false);
     }
   };
 
@@ -216,6 +236,32 @@ function Cart() {
                   <span>{coupons.length}</span>
                 </div>
 
+                <div style={{ display: "flex", gap: "8px", margin: "16px 0" }}>
+                  <Input
+                    placeholder="Nhập mã giảm giá"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value)}
+                    onPressEnter={handleApplyCoupon}
+                  />
+                  <Button
+                    type="primary"
+                    onClick={handleApplyCoupon}
+                    loading={applyingCoupon}
+                    style={{ backgroundColor: "#00b894", borderColor: "#00b894" }}
+                  >
+                    Áp dụng
+                  </Button>
+                </div>
+
+                {cart?.couponId && (
+                  <div className="summaryRow" style={{ color: "#00b894" }}>
+                    <span>Đã giảm</span>
+                    <span style={{ fontWeight: "bold" }}>
+                      -{(cart.totalPrice - cart.finalPrice).toLocaleString("vi-VN")}đ
+                    </span>
+                  </div>
+                )}
+
                 <div className="summaryRow">
                   <span>Vận chuyển</span>
                   <span>Miễn phí</span>
@@ -223,7 +269,7 @@ function Cart() {
 
                 <div className="summaryRow total">
                   <span>Tổng cộng</span>
-                  <span>{totalPrice.toLocaleString("vi-VN")}đ</span>
+                  <span>{(cart?.couponId ? cart?.finalPrice : totalPrice).toLocaleString("vi-VN")}đ</span>
                 </div>
 
                 <Button

@@ -4,14 +4,17 @@ import ChatBot from "./components/chatbot/ChatBot";
 import TeaMixerFloat from "./components/game/TeaMixerFloat";
 import Footer from "./components/Footer";
 
+
 function App() {
   return (
     <>
+    
       <Header />
       <ChatBot />
       <TeaMixerFloat />
       <Outlet />
       <Footer />
+    
     </>
   );
 }

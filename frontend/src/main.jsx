@@ -9,7 +9,6 @@ import enUS from "antd/locale/en_US";
 import LoginPage from "./pages/auth/Login.jsx";
 import { ConfigProvider } from "antd";
 
-
 import Shop from "./pages/client/Shop.jsx";
 import CreateUser from "./components/admin/user/CreateUser.jsx";
 import DetailUser from "./components/admin/user/DetailUser.jsx";
@@ -44,96 +43,45 @@ import AboutPage from "./pages/client/AboutPage.jsx";
 import BanchaPage from "./pages/client/BanchaPage.jsx";
 import ProductMain from "./components/homepage/ProductMain.jsx";
 import ProductList from "./components/homepage/ProductList.jsx";
+
+import StoreProfile from "./components/admin/store/StoreProfile.jsx";
+import TableReview from "./components/admin/review/TableReview.jsx";
+import TableFeedback from "./components/admin/feedback/TableFeedback.jsx";
+import TableComplaint from "./components/admin/complaint/TableComplaint.jsx";
+import SalesReport from "./components/admin/report/SalesReport.jsx";
+import MyOrders from "./pages/client/MyOrders.jsx";
+import MyFeedback from "./pages/client/MyFeedback.jsx";
+
+
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
     children: [
-      {
-        index: true,
-        element: <Homepage />,
-      },
-      {
-        path: "product/:id",
-        element: <ProductPage />,
-      },
-      {
-        path: "about",
-        element: <AboutPage />,
-      },
-       {
-        path: "bancha-detail",
-        element: <BanchaPage />,
-      },
-       {
-        path: "product-main",
-        element: <ProductMain />,
-      },
-      {
-        path: "product-list",
-        element: <ProductList />,
-      },
-
-      {
-        path: "shop",
-        element: <Shop />,
-      },
-      {
-        path: "story",
-        element: <Story />,
-      },
-      {
-        path: "story-3",
-        element: <Original />,
-      },
-      {
-        path: "story-2",
-        element: <Philosophy />,
-      },
-      {
-        path: "cart",
-        element: <Cart />,
-      },
-      {
-        path: "checkout",
-        element: <Checkout />,
-      },
-      {
-        path: "payment-success/:orderId",
-        element: <PaymentSuccess />,
-      },
-      // 3D Experience pages — standalone, no Header/Footer
-      {
-        path: "/3d-products",
-        element: <Products3DList />,
-      },
-      {
-        path: "/3d-products/:id",
-        element: <Product3DDetail />,
-      },
-      // Tea Mixer Game — standalone
-      {
-        path: "/tea-mixer",
-        element: <TeaMixerBoard />,
-      },
+      { index: true, element: <Homepage /> },
+      { path: "product/:id", element: <ProductPage /> },
+      { path: "about", element: <AboutPage /> },
+      { path: "bancha-detail", element: <BanchaPage /> },
+      { path: "product-main", element: <ProductMain /> },
+      { path: "product-list", element: <ProductList /> },
+      { path: "shop", element: <Shop /> },
+      { path: "story", element: <Story /> },
+      { path: "story-3", element: <Original /> },
+      { path: "story-2", element: <Philosophy /> },
+      { path: "cart", element: <Cart /> },
+      { path: "checkout", element: <Checkout /> },
+      { path: "payment-success/:orderId", element: <PaymentSuccess /> },
+      { path: "orders", element: <MyOrders /> },
+      { path: "my-feedback", element: <MyFeedback /> },
+      { path: "/3d-products", element: <Products3DList /> },
+      { path: "/3d-products/:id", element: <Product3DDetail /> },
+      { path: "/tea-mixer", element: <TeaMixerBoard /> },
     ],
   },
-  {
-    path: "login",
-    element: <LoginPage />,
-  },
-  {
-    path: "register",
-    element: <RegisterPage />,
-  },
-  {
-    path: "forgot-password",
-    element: <ForgotPassword />,
-  },
-  {
-    path: "/reset-password",
-    element: <ResetPassword />,
-  },
+  { path: "login", element: <LoginPage /> },
+  { path: "register", element: <RegisterPage /> },
+  { path: "forgot-password", element: <ForgotPassword /> },
+  { path: "/reset-password", element: <ResetPassword /> },
   {
     element: <AdminRoute />,
     children: [
@@ -155,26 +103,42 @@ const router = createBrowserRouter([
           { path: "detail-product", element: <DetailProduct /> },
           { path: "update-product", element: <UpdateProduct /> },
 
-          //Category
+          // CATEGORY
           { path: "table-category", element: <TableCategory /> },
           { path: "create-category", element: <CreateCategory /> },
           { path: "detail-category", element: <DetailCategory /> },
           { path: "update-category", element: <UpdateCategory /> },
-          //coupon
+
+          // COUPON
           { path: "table-coupon", element: <TableCoupon /> },
-          //order
+
+          // ORDER
           { path: "table-order", element: <TableOrder /> },
+
+          // STORE PROFILE
+          { path: "store-profile", element: <StoreProfile /> },
+
+          // REVIEW
+          { path: "table-review", element: <TableReview /> },
+
+          // FEEDBACK
+          { path: "table-feedback", element: <TableFeedback /> },
+
+          // COMPLAINT
+          { path: "table-complaint", element: <TableComplaint /> },
+
+          // SALES REPORT
+          { path: "sales-report", element: <SalesReport /> },
         ],
       },
     ],
   },
 ]);
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    {/* <AppProvider> */}
     <ConfigProvider locale={enUS}>
       <RouterProvider router={router} />
     </ConfigProvider>
-    {/* </AppProvider> */}
   </StrictMode>,
 );

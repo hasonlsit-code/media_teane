@@ -15,6 +15,18 @@ import { message, Spin } from "antd";
 
 import "./paymentSuccess.css";
 import { requestPaymentById } from "../../config/PaymentRequest";
+import ComplaintModal from "../../components/complaint/ComplaintModal";
+
+// Lưu orderId vào localStorage để hiện thị ở trang My Orders
+const saveOrderId = (id) => {
+  try {
+    const ids = JSON.parse(localStorage.getItem("myOrderIds") || "[]");
+    if (!ids.includes(id)) {
+      ids.unshift(id);
+      localStorage.setItem("myOrderIds", JSON.stringify(ids.slice(0, 50)));
+    }
+  } catch {}
+};
 
 function PaymentSuccess() {
   const { orderId } = useParams();
@@ -26,6 +38,7 @@ function PaymentSuccess() {
       try {
         const res = await requestPaymentById(orderId);
         setDataPayment(res?.metadata || null);
+        if (orderId) saveOrderId(orderId);
       } catch (error) {
         console.log(error);
         message.error("Không thể tải thông tin đơn hàng");
@@ -344,6 +357,13 @@ function PaymentSuccess() {
                     Xem Đơn Hàng Của Tôi
                   </button>
                 </Link>
+
+                <div style={{ marginTop: 8 }}>
+                  <ComplaintModal
+                    orderId={dataPayment?._id}
+                    orderStatus={dataPayment?.status}
+                  />
+                </div>
               </div>
             </div>
           </div>

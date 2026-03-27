@@ -1,8 +1,15 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Layout, Menu, Breadcrumb, theme, Avatar, Space, Button, Typography } from "antd";
+import {
+  Layout, Menu, theme, Avatar, Space, Button, Typography,
+} from "antd";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import "./dashboard.css";
-import { HomeOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  HomeOutlined, UserOutlined, ShopOutlined, ShoppingOutlined,
+  AppstoreOutlined, TagOutlined, StarOutlined, MessageOutlined,
+  ExclamationCircleOutlined, BarChartOutlined, GiftOutlined,
+} from "@ant-design/icons";
+
 const { Header, Content, Footer, Sider } = Layout;
 const { Text } = Typography;
 
@@ -15,9 +22,7 @@ const DashBoard = () => {
   useEffect(() => {
     try {
       const stored = localStorage.getItem("user");
-      if (stored) {
-        setUser(JSON.parse(stored));
-      }
+      if (stored) setUser(JSON.parse(stored));
     } catch (e) {
       console.error("Failed to parse user from localStorage", e);
     }
@@ -32,65 +37,107 @@ const DashBoard = () => {
   const items = useMemo(
     () => [
       {
-        key: "user",
-        label: "User",
+        key: "store-group",
+        label: "Cửa hàng",
+        icon: <ShopOutlined />,
         children: [
-          { label: "Table User", key: "table-user" },
-          // { label: "Create User", key: "create-user" },
-          // { label: "Detail User", key: "detail-user" },
-          // { label: "Update User", key: "update-user" },
+          { label: "Hồ sơ cửa hàng", key: "store-profile" },
         ],
       },
       {
-        key: "product",
-        label: "Product",
+        key: "user-group",
+        label: "Người dùng",
+        icon: <UserOutlined />,
         children: [
-          { label: "Table Product", key: "table-product" },
-          // { label: "Create Product", key: "create-product" },
-          // { label: "Detail Product", key: "detail-product" },
-          // { label: "Update Product", key: "update-product" },
+          { label: "Danh sách User", key: "table-user" },
         ],
       },
       {
-        key: "category",
-        label: "Category",
+        key: "product-group",
+        label: "Sản phẩm",
+        icon: <AppstoreOutlined />,
         children: [
-          { label: "Table Category", key: "table-category" },
-          // { label: "Create Category", key: "create-category" },
-          // { label: "Detail Category", key: "detail-category" },
-          // { label: "Update Category", key: "update-category" },
+          { label: "Danh sách SP", key: "table-product" },
         ],
       },
       {
-        key: "coupon",
-        label: "Coupon",
-        children: [{ label: "Tabel Coupon", key: "table-coupon" }],
+        key: "category-group",
+        label: "Danh mục",
+        icon: <TagOutlined />,
+        children: [
+          { label: "Danh sách DM", key: "table-category" },
+        ],
       },
       {
-        key: "order",
-        label: "Order",
-        children: [{ label: "Tabel Coupon", key: "table-order" }],
+        key: "order-group",
+        label: "Đơn hàng",
+        icon: <ShoppingOutlined />,
+        children: [
+          { label: "Quản lý đơn hàng", key: "table-order" },
+        ],
       },
       {
-        key: "Dashboard",
-        label: "Dashboard",
-        children: [{ label: "Dashboard", key: "table-order" }],
+        key: "coupon-group",
+        label: "Mã giảm giá",
+        icon: <GiftOutlined />,
+        children: [
+          { label: "Danh sách Coupon", key: "table-coupon" },
+        ],
+      },
+      {
+        key: "review-group",
+        label: "Đánh giá",
+        icon: <StarOutlined />,
+        children: [
+          { label: "Đánh giá SP", key: "table-review" },
+        ],
+      },
+      {
+        key: "feedback-group",
+        label: "Phản hồi",
+        icon: <MessageOutlined />,
+        children: [
+          { label: "Phản hồi KH", key: "table-feedback" },
+        ],
+      },
+      {
+        key: "complaint-group",
+        label: "Khiếu nại",
+        icon: <ExclamationCircleOutlined />,
+        children: [
+          { label: "Khiếu nại", key: "table-complaint" },
+        ],
+      },
+      {
+        key: "report-group",
+        label: "Báo cáo",
+        icon: <BarChartOutlined />,
+        children: [
+          { label: "Doanh số", key: "sales-report" },
+        ],
       },
     ],
     [],
   );
 
   const openKey = useMemo(() => {
-    if (selectedKey.includes("user")) return ["user"];
-    if (selectedKey.includes("product")) return ["product"];
-    return ["user"];
+    if (selectedKey.includes("store")) return ["store-group"];
+    if (selectedKey.includes("user")) return ["user-group"];
+    if (selectedKey.includes("product")) return ["product-group"];
+    if (selectedKey.includes("category")) return ["category-group"];
+    if (selectedKey.includes("order")) return ["order-group"];
+    if (selectedKey.includes("coupon")) return ["coupon-group"];
+    if (selectedKey.includes("review")) return ["review-group"];
+    if (selectedKey.includes("feedback")) return ["feedback-group"];
+    if (selectedKey.includes("complaint")) return ["complaint-group"];
+    if (selectedKey.includes("report")) return ["report-group"];
+    return ["user-group"];
   }, [selectedKey]);
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
-        <div className="admin-logo">{!collapsed && <span>Admin</span>}</div>
-
+        <div className="admin-logo">{!collapsed && <span>MediTea Admin</span>}</div>
         <Menu
           theme="dark"
           mode="inline"
@@ -111,9 +158,7 @@ const DashBoard = () => {
                 style={{ backgroundColor: "#1677ff" }}
               />
               <div className="admin-header__welcome">
-                <Text type="secondary" style={{ fontSize: 12 }}>
-                  Xin chào,
-                </Text>
+                <Text type="secondary" style={{ fontSize: 12 }}>Xin chào,</Text>
                 <Text strong style={{ fontSize: 15, display: "block", lineHeight: 1.2 }}>
                   {user?.fullName || "Admin"}
                 </Text>
@@ -121,35 +166,27 @@ const DashBoard = () => {
             </Space>
           </div>
           <div className="admin-header__right">
-            <Button
-              type="default"
-              icon={<HomeOutlined />}
-              onClick={() => navigate("/")}
-            >
+            <Button type="default" icon={<HomeOutlined />} onClick={() => navigate("/")}>
               Trang chủ
             </Button>
           </div>
         </Header>
 
         <Content style={{ margin: "0 16px" }}>
-          <Breadcrumb style={{ margin: "16px 0" }}>
-            <Breadcrumb.Item>Admin</Breadcrumb.Item>
-            <Breadcrumb.Item>{selectedKey}</Breadcrumb.Item>
-          </Breadcrumb>
-
           <div
             style={{
               padding: 24,
               minHeight: 360,
               background: colorBgContainer,
               borderRadius: borderRadiusLG,
+              marginTop: 16,
             }}
           >
             <Outlet />
           </div>
         </Content>
 
-        <Footer style={{ textAlign: "center" }}>MediTea xin chào</Footer>
+        <Footer style={{ textAlign: "center" }}>MediTea Admin © 2025</Footer>
       </Layout>
     </Layout>
   );

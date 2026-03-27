@@ -23,6 +23,7 @@ import {
 import { productDetail } from "../../config/ProductRequest";
 import { requestAddToCart } from "../../config/CartRequest";
 import { listCategory } from "../../config/CategoryRequest";
+import ProductReviews from "../../components/review/ProductReviews";
 import "./productDetail.css";
 
 function ProductDetail() {
@@ -298,6 +299,9 @@ function ProductDetail() {
               </Descriptions.Item>
             </Descriptions>
           </div>
+
+          {/* Đánh giá sản phẩm */}
+          <ProductReviews productId={product._id} />
         </div>
       </div>
     </div>

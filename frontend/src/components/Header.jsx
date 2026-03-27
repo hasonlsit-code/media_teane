@@ -1,8 +1,9 @@
 import "../App.css";
 import { Link, useNavigate } from "react-router-dom";
-import { UserOutlined, LogoutOutlined, EditOutlined } from "@ant-design/icons";
+import { UserOutlined, LogoutOutlined, EditOutlined, ShoppingOutlined, MessageOutlined } from "@ant-design/icons";
 import { useState, useEffect, useRef } from "react";
 import { requestLogout } from "../config/UserRequest";
+import FeedbackModal from "./feedback/FeedbackModal";
 
 function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -165,6 +166,18 @@ function Header() {
                   <EditOutlined className="header__dropdown-icon" />
                   <span>Thay đổi thông tin</span>
                 </button>
+                <div className="header__dropdown-divider" />
+                <button
+                  className="header__dropdown-item"
+                  onClick={() => { setDropdownOpen(false); navigate("/orders"); }}
+                >
+                  <ShoppingOutlined className="header__dropdown-icon" />
+                  <span>Đơn hàng của tôi</span>
+                </button>
+                <div className="header__dropdown-divider" />
+                <div style={{ padding: "4px 12px" }}>
+                  <FeedbackModal buttonStyle={{ width: "100%", textAlign: "left" }} />
+                </div>
                 <div className="header__dropdown-divider" />
                 <button
                   className="header__dropdown-item header__dropdown-item--danger"
