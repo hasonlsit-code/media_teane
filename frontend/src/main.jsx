@@ -51,7 +51,7 @@ import TableComplaint from "./components/admin/complaint/TableComplaint.jsx";
 import SalesReport from "./components/admin/report/SalesReport.jsx";
 import MyOrders from "./pages/client/MyOrders.jsx";
 import MyFeedback from "./pages/client/MyFeedback.jsx";
-import HomePage from "./components/Homepage.jsx";
+import HomePage from "./components/HomePage.jsx";
 
 
 

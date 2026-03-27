@@ -21,23 +21,24 @@ const bcrypt = require("bcrypt");
 const otpGenerator = require("otp-generator");
 
 function setCookie(res, accessToken, refreshToken) {
+  const isProduction = process.env.NODE_ENV === "production";
   res.cookie("accessToken", accessToken, {
     httpOnly: true,
     secure: true,
     maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day
-    sameSite: "strict",
+    sameSite: isProduction ? "none" : "lax",
   });
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: true,
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-    sameSite: "strict",
+    sameSite: isProduction ? "none" : "lax",
   });
   res.cookie("logged", 1, {
     httpOnly: false,
     secure: true,
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
-    sameSite: "strict",
+    sameSite: isProduction ? "none" : "lax",
   });
 }
 
@@ -159,7 +160,7 @@ class UsersController {
       httpOnly: false,
       secure: true,
       maxAge: 5 * 60 * 1000, // 5 minutes
-      sameSite: "strict",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     });
 
     await otpModel.create({
@@ -251,7 +252,7 @@ class UsersController {
       httpOnly: true,
       secure: true,
       maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day
-      sameSite: "strict",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     });
 
     return new OK({

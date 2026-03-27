@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import "../../App.css";
-import { useScrollReveal } from "../../components/Homepage";
+import { useScrollReveal } from "../../components/HomePage";
 
 export default function AboutPage() {
   useScrollReveal();
