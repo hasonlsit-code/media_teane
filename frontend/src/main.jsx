@@ -38,7 +38,7 @@ import ProductPage from "./pages/client/ProductPage.jsx";
 import Cart from "./pages/cart/EbayCart.jsx";
 import Checkout from "./pages/cart/Checkout.jsx";
 import PaymentSuccess from "./pages/cart/PaymentSuccess.jsx";
-import Homepage from "./components/HomePage.jsx";
+
 import AboutPage from "./pages/client/AboutPage.jsx";
 import BanchaPage from "./pages/client/BanchaPage.jsx";
 import ProductMain from "./components/homepage/ProductMain.jsx";
@@ -51,6 +51,8 @@ import TableComplaint from "./components/admin/complaint/TableComplaint.jsx";
 import SalesReport from "./components/admin/report/SalesReport.jsx";
 import MyOrders from "./pages/client/MyOrders.jsx";
 import MyFeedback from "./pages/client/MyFeedback.jsx";
+import HomePage from "./components/Homepage.jsx";
+
 
 
 const router = createBrowserRouter([
@@ -58,7 +60,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
-      { index: true, element: <Homepage /> },
+      { index: true, element: <HomePage /> },
       { path: "product/:id", element: <ProductPage /> },
       { path: "about", element: <AboutPage /> },
       { path: "bancha-detail", element: <BanchaPage /> },
